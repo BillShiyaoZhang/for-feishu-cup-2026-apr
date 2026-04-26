@@ -1,0 +1,473 @@
+@prefix rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:      <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:       <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:       <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf:      <http://xmlns.com/foaf/0.1/> .
+@prefix vcard:     <http://www.w3.org/2006/vcard/ns#> .
+@prefix geo:       <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+
+###############################################################################
+# FOAF (Friend of a Friend) Vocabulary
+# Version: 0.99
+# Spec: http://xmlns.com/foaf/0.1/
+# Local Copy: OpenClaw Ontology Skill
+###############################################################################
+
+<http://xmlns.com/foaf/0.1/>
+    a owl:Ontology ;
+    rdfs:label "FOAF Vocabulary Specification" ;
+    rdfs:comment "FOAF (Friend of a Friend) vocabulary for describing people, groups, and their relationships on the Web." ;
+    owl:versionInfo "0.99" ;
+    rdfs:seeAlso <http://xmlns.com/foaf/spec/> .
+
+# ── Classes ───────────────────────────────────────────────────────────────────
+
+foaf:Agent
+    a owl:Class ;
+    rdfs:label "Agent" ;
+    rdfs:comment "An agent (eg. person, group, software or physical artifact)." ;
+    rdfs:subClassOf owl:Thing .
+
+foaf:Person
+    a owl:Class ;
+    rdfs:label "Person" ;
+    rdfs:comment "A person." ;
+    rdfs:subClassOf foaf:Agent ;
+    rdfs:subClassOf foaf:SpatialThing ;
+    owl:disjointWith foaf:Project ;
+    owl:disjointWith foaf:Organization .
+
+foaf:Group
+    a owl:Class ;
+    rdfs:label "Group" ;
+    rdfs:comment "A group of Agents." ;
+    rdfs:subClassOf foaf:Agent .
+
+foaf:Organization
+    a owl:Class ;
+    rdfs:label "Organization" ;
+    rdfs:comment "An organization." ;
+    rdfs:subClassOf foaf:Agent ;
+    owl:disjointWith foaf:Person ;
+    owl:disjointWith foaf:Document .
+
+foaf:Document
+    a owl:Class ;
+    rdfs:label "Document" ;
+    rdfs:comment "A document." ;
+    rdfs:subClassOf owl:Thing ;
+    owl:disjointWith foaf:Project ;
+    owl:disjointWith foaf:Organization .
+
+foaf:Image
+    a owl:Class ;
+    rdfs:label "Image" ;
+    rdfs:comment "An image." ;
+    rdfs:subClassOf foaf:Document .
+
+foaf:PersonalProfileDocument
+    a owl:Class ;
+    rdfs:label "PersonalProfileDocument" ;
+    rdfs:comment "A personal profile RDF document." ;
+    rdfs:subClassOf foaf:Document .
+
+foaf:Project
+    a owl:Class ;
+    rdfs:label "Project" ;
+    rdfs:comment "A project (a collective endeavour of some kind)." ;
+    owl:disjointWith foaf:Person ;
+    owl:disjointWith foaf:Document .
+
+foaf:OnlineAccount
+    a owl:Class ;
+    rdfs:label "OnlineAccount" ;
+    rdfs:comment "An online account." ;
+    rdfs:subClassOf owl:Thing .
+
+foaf:OnlineChatAccount
+    a owl:Class ;
+    rdfs:label "OnlineChatAccount" ;
+    rdfs:comment "An online chat account." ;
+    rdfs:subClassOf foaf:OnlineAccount .
+
+foaf:OnlineEcommerceAccount
+    a owl:Class ;
+    rdfs:label "OnlineEcommerceAccount" ;
+    rdfs:comment "An online e-commerce account." ;
+    rdfs:subClassOf foaf:OnlineAccount .
+
+foaf:OnlineGamingAccount
+    a owl:Class ;
+    rdfs:label "OnlineGamingAccount" ;
+    rdfs:comment "An online gaming account." ;
+    rdfs:subClassOf foaf:OnlineAccount .
+
+foaf:SpatialThing
+    a owl:Class ;
+    rdfs:label "Spatial Thing" ;
+    rdfs:comment "A spatial thing." ;
+    rdfs:subClassOf owl:Thing .
+
+foaf:LabelProperty
+    a owl:Class ;
+    rdfs:label "LabelProperty" ;
+    rdfs:comment "A foaf:LabelProperty is any RDF property with textual values that serve as labels." .
+
+# ── Properties ────────────────────────────────────────────────────────────────
+
+foaf:name
+    a owl:DatatypeProperty ;
+    rdfs:label "name" ;
+    rdfs:comment "The name of this thing." ;
+    rdfs:domain owl:Thing ;
+    rdfs:range xsd:string .
+
+foaf:homepage
+    a owl:ObjectProperty, owl:InverseFunctionalProperty ;
+    rdfs:label "homepage" ;
+    rdfs:comment "A homepage for some thing." ;
+    rdfs:domain foaf:Thing ;
+    rdfs:range foaf:Document .
+
+foaf: depiction
+    a owl:ObjectProperty ;
+    rdfs:label "depiction" ;
+    rdfs:comment "A depiction of some thing." ;
+    rdfs:domain owl:Thing ;
+    rdfs:range foaf:Image .
+
+foaf:img
+    a owl:ObjectProperty ;
+    rdfs:label "img" ;
+    rdfs:comment "An image." ;
+    rdfs:domain owl:Thing ;
+    rdfs:range foaf:Image .
+
+foaf:primaryTopic
+    a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "primary topic" ;
+    rdfs:comment "The primary topic of some page or document." ;
+    rdfs:domain foaf:Document ;
+    rdfs:range owl:Thing .
+
+foaf:isPrimaryTopicOf
+    a owl:ObjectProperty, owl:InverseFunctionalProperty ;
+    rdfs:label "is primary topic of" ;
+    rdfs:comment "A document that this thing is the primary topic of." ;
+    rdfs:domain owl:Thing ;
+    rdfs:range foaf:Document .
+
+foaf:topic
+    a owl:ObjectProperty ;
+    rdfs:label "topic" ;
+    rdfs:comment "A topic of some page or document." ;
+    rdfs:domain foaf:Document ;
+    rdfs:range owl:Thing .
+
+foaf:page
+    a owl:ObjectProperty ;
+    rdfs:label "page" ;
+    rdfs:comment "A page or document about this thing." ;
+    rdfs:domain owl:Thing ;
+    rdfs:range foaf:Document .
+
+foaf:made
+    a owl:ObjectProperty ;
+    rdfs:label "made" ;
+    rdfs:comment "Something that was made by this agent." ;
+    rdfs:domain foaf:Agent ;
+    rdfs:range owl:Thing .
+
+foaf:maker
+    a owl:ObjectProperty ;
+    rdfs:label "maker" ;
+    rdfs:comment "An agent that made this thing." ;
+    rdfs:domain owl:Thing ;
+    rdfs:range foaf:Agent .
+
+foaf:Agent
+    a owl:ObjectProperty ;
+    rdfs:label "agent" ;
+    rdfs:comment "The agent involved in some event." ;
+    rdfs:domain owl:Thing ;
+    rdfs:range foaf:Agent .
+
+foaf:member
+    a owl:ObjectProperty ;
+    rdfs:label "member" ;
+    rdfs:comment "Indicates a member of a Group." ;
+    rdfs:domain foaf:Group ;
+    rdfs:range foaf:Agent .
+
+foaf:knows
+    a owl:ObjectProperty ;
+    rdfs:label "knows" ;
+    rdfs:comment "A person known by this person (indicating some level of reciprocated interaction between the parties)." ;
+    rdfs:domain foaf:Person ;
+    rdfs:range foaf:Person .
+
+foaf:workplaceHomepage
+    a owl:ObjectProperty ;
+    rdfs:label "workplaceHomepage" ;
+    rdfs:comment "A workplace homepage for some organization." ;
+    rdfs:domain foaf:Agent ;
+    rdfs:range foaf:Document .
+
+foaf:workInfoHomepage
+    a owl:ObjectProperty ;
+    rdfs:label "workInfoHomepage" ;
+    rdfs:comment "A work info homepage link." ;
+    rdfs:domain foaf:Agent ;
+    rdfs:range foaf:Document .
+
+foaf:schoolHomepage
+    a owl:ObjectProperty ;
+    rdfs:label "schoolHomepage" ;
+    rdfs:comment "A homepage for a school." ;
+    rdfs:domain foaf:Agent ;
+    rdfs:range foaf:Document .
+
+foaf:weblog
+    a owl:ObjectProperty, owl:InverseFunctionalProperty ;
+    rdfs:label "weblog" ;
+    rdfs:comment "A weblog of some thing (whether person, group, company etc.)." ;
+    rdfs:domain foaf:Agent ;
+    rdfs:range foaf:Document .
+
+foaf:openid
+    a owl:ObjectProperty ;
+    rdfs:label "openid" ;
+    rdfs:comment "An OpenID for this thing." .
+
+foaf:mbox
+    a owl:ObjectProperty ;
+    rdfs:label "mbox" ;
+    rdfs:comment "A personal mailbox, ie. an Internet mailbox associated with exactly one owner." ;
+    rdfs:domain foaf:Agent ;
+    rdfs:range owl:Thing .
+
+foaf:mbox_sha1sum
+    a owl:DatatypeProperty ;
+    rdfs:label "mbox_sha1sum" ;
+    rdfs:comment "The sha1sum of a mailbox URI." ;
+    rdfs:domain foaf:Agent ;
+    rdfs:range xsd:string .
+
+foaf:account
+    a owl:ObjectProperty ;
+    rdfs:label "account" ;
+    rdfs:comment "Indicates an account held by this agent." ;
+    rdfs:domain foaf:Agent ;
+    rdfs:range foaf:OnlineAccount .
+
+foaf:accountName
+    a owl:DatatypeProperty ;
+    rdfs:label "accountName" ;
+    rdfs:comment "Indicates the name (identifier) associated with this online account." ;
+    rdfs:domain foaf:OnlineAccount ;
+    rdfs:range xsd:string .
+
+foaf:accountServiceHomepage
+    a owl:ObjectProperty ;
+    rdfs:label "accountServiceHomepage" ;
+    rdfs:comment "Indicates a homepage of the service provider for this online account." ;
+    rdfs:domain foaf:OnlineAccount ;
+    rdfs:range foaf:Document .
+
+foaf:givenName
+    a owl:DatatypeProperty ;
+    rdfs:label "givenName" ;
+    rdfs:comment "The given name of some person." ;
+    rdfs:domain foaf:Person ;
+    rdfs:range xsd:string .
+
+foaf:familyName
+    a owl:DatatypeProperty ;
+    rdfs:label "familyName" ;
+    rdfs:comment "The family name of some person." ;
+    rdfs:domain foaf:Person ;
+    rdfs:range xsd:string .
+
+foaf:firstName
+    a owl:DatatypeProperty ;
+    rdfs:label "firstName" ;
+    rdfs:comment "The first name of a person." ;
+    rdfs:domain foaf:Person ;
+    rdfs:range xsd:string .
+
+foaf:givenName
+    a owl:DatatypeProperty ;
+    rdfs:label "givenName" ;
+    rdfs:comment "The given name of some person." ;
+    rdfs:domain foaf:Person ;
+    rdfs:range xsd:string .
+
+foaf:gender
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "gender" ;
+    rdfs:comment "The gender of this Agent (typically but not necessarily 'male' or 'female')." ;
+    rdfs:domain foaf:Agent ;
+    rdfs:range xsd:string .
+
+foaf:birthday
+    a owl:DatatypeProperty ;
+    rdfs:label "birthday" ;
+    rdfs:comment "The birthday of this thing." .
+
+foaf:age
+    a owl:DatatypeProperty ;
+    rdfs:label "age" ;
+    rdfs:comment "The age of this thing." .
+
+foaf:interest
+    a owl:ObjectProperty ;
+    rdfs:label "interest" ;
+    rdfs:comment "A page about a topic of interest to this person." ;
+    rdfs:domain foaf:Agent ;
+    rdfs:range foaf:Document .
+
+foaf:topic_interest
+    a owl:ObjectProperty ;
+    rdfs:label "topic_interest" ;
+    rdfs:comment "A topic of interest to this person." .
+
+foaf:currentProject
+    a owl:ObjectProperty ;
+    rdfs:label "currentProject" ;
+    rdfs:comment "A current project this person works on." ;
+    rdfs:domain foaf:Person ;
+    rdfs:range owl:Thing .
+
+foaf:pastProject
+    a owl:ObjectProperty ;
+    rdfs:label "pastProject" ;
+    rdfs:comment "A project this person has previously worked on." ;
+    rdfs:domain foaf:Person ;
+    rdfs:range owl:Thing .
+
+foaf:plan
+    a owl:DatatypeProperty ;
+    rdfs:label "plan" ;
+    rdfs:comment "A plan for something." .
+
+foaf:publications
+    a owl:ObjectProperty ;
+    rdfs:label "publications" ;
+    rdfs:comment "A link to the publications of this person." .
+
+foaf:knows
+    a owl:ObjectProperty ;
+    rdfs:label "knows" ;
+    rdfs:comment "A person known by this person." ;
+    rdfs:domain foaf:Person ;
+    rdfs:range foaf:Person .
+
+foaf:based_near
+    a owl:ObjectProperty ;
+    rdfs:label "based_near" ;
+    rdfs:comment "A location that something is based near." ;
+    rdfs:subPropertyOf geo:near ;
+    rdfs:domain foaf:SpatialThing ;
+    rdfs:range foaf:SpatialThing .
+
+foaf:geekcode
+    a owl:DatatypeProperty ;
+    rdfs:label "geekcode" ;
+    rdfs:comment "A textual representation of this person's geekcode." .
+
+foaf:myersBriggs
+    a owl:DatatypeProperty ;
+    rdfs:label "myersBriggs" ;
+    rdfs:comment "A Myers Briggs (MBTI) personality type." .
+
+foaf:_SHA1
+    a owl:DatatypeProperty ;
+    rdfs:label "sha1" ;
+    rdfs:comment "The SHA1 fingerprint of some binary data." ;
+    rdfs:range xsd:string .
+
+foaf:sha1
+    a owl:DatatypeProperty ;
+    rdfs:label "sha1sum" ;
+    rdfs:comment "The sha1sum of the email mailbox." ;
+    rdfs:seeAlso <http://xmlns.com/foaf/0.1/mbox_sha1sum> .
+
+# ── Chat IDs (deprecated in favor of OnlineAccount) ───────────────────────────
+
+foaf:jabberID
+    a owl:DatatypeProperty ;
+    rdfs:label "jabberID" ;
+    rdfs:comment "A jabber ID for this person." ;
+    rdfs:domain foaf:Agent .
+
+foaf:aimChatID
+    a owl:DatatypeProperty ;
+    rdfs:label "aimChatID" ;
+    rdfs:comment "An AIM chat ID." ;
+    rdfs:domain foaf:Agent .
+
+foaf:skypeID
+    a owl:DatatypeProperty ;
+    rdfs:label "skypeID" ;
+    rdfs:comment "A Skype ID for this person." ;
+    rdfs:domain foaf:Agent .
+
+foaf:msnChatID
+    a owl:DatatypeProperty ;
+    rdfs:label "msnChatID" ;
+    rdfs:comment "An MSN chat ID." ;
+    rdfs:domain foaf:Agent .
+
+foaf:icqChatID
+    a owl:DatatypeProperty ;
+    rdfs:label "icqChatID" ;
+    rdfs:comment "An ICQ chat ID." ;
+    rdfs:domain foaf:Agent .
+
+foaf:yahooChatID
+    a owl:DatatypeProperty ;
+    rdfs:label "yahooChatID" ;
+    rdfs:comment "A Yahoo chat ID." ;
+    rdfs:domain foaf:Agent .
+
+foaf:status
+    a owl:DatatypeProperty ;
+    rdfs:label "status" ;
+    rdfs:comment "The status of this thing (e.g. online, offline)." .
+
+###############################################################################
+# OpenClaw FOAF Extensions
+# These properties bridge FOAF entities to OpenClaw-specific concepts
+###############################################################################
+
+# openclaw:preferredPeer links a foaf:Person to their messaging peer ID
+openclaw:preferredPeer
+    a owl:DatatypeProperty ;
+    rdfs:label "preferredPeer" ;
+    rdfs:comment "The preferred peer ID string (channel-specific contact identifier) for this foaf:Person. Format: '<channelType>:<peerId>'." ;
+    rdfs:domain foaf:Person ;
+    rdfs:range xsd:string .
+
+# openclaw:language links a foaf:Person to their preferred language (BCP 47)
+openclaw:language
+    a owl:DatatypeProperty ;
+    rdfs:label "language" ;
+    rdfs:comment "A natural language habitually used by this foaf:Person. Use BCP 47 tags (e.g. 'zh-Hans', 'en')." ;
+    rdfs:domain foaf:Person ;
+    rdfs:range xsd:string .
+
+# openclaw:note links a foaf:Person to a free-text annotation
+openclaw:note
+    a owl:DatatypeProperty ;
+    rdfs:label "note" ;
+    rdfs:comment "A free-text note about this foaf:Person." ;
+    rdfs:domain foaf:Person ;
+    rdfs:range xsd:string .
+
+# openclaw:jobTitle links a foaf:Person to their professional title
+openclaw:jobTitle
+    a owl:DatatypeProperty ;
+    rdfs:label "jobTitle" ;
+    rdfs:comment "The professional title or role label of this foaf:Person." ;
+    rdfs:domain foaf:Person ;
+    rdfs:range xsd:string .

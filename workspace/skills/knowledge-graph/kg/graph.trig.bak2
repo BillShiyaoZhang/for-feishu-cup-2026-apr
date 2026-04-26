@@ -1,0 +1,393 @@
+@prefix kg: <urn:openclaw:kg:> .
+@prefix openclaw: <urn:openclaw:ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<urn:openclaw:graph:agents> {
+    kg:agent-business-manager a openclaw:Agent ;
+        openclaw:agentId "business-manager" ;
+        openclaw:createdAt "2026-02-28T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Business manager agent for order processing. Parses unstructured text, calls Feishu Bitable API to write main orders and transport records." ;
+        openclaw:hasName "business-manager" .
+
+    kg:agent-claw a openclaw:Agent ;
+        openclaw:agentId "claw" ;
+        openclaw:createdAt "2026-04-01T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Bill's primary AI assistant. Coordinates subagents, manages schedules via Microsoft Graph Calendar, handles image understanding, weather queries, and web search. Embodies the Claw persona with a helpful, efficient, to-the-point vibe. Can directly handle calendar/weather/images, or delegate to subagents like skill-manager, workspace-manager, memory-manager, and search." ;
+        openclaw:hasName "Claw" ;
+        openclaw:isDefaultAgent true ;
+        openclaw:updatedAt "2026-04-01T11:50:00+00:00"^^xsd:dateTime ;
+        openclaw:usesSkill kg:skill-agent-registry,
+            kg:skill-create-agent,
+            kg:skill-knowledge-graph,
+            kg:skill-microsoft-graph-calendar,
+            kg:skill-ontology,
+            kg:skill-spawn-agent,
+            kg:skill-understand-image,
+            kg:skill-weather,
+            kg:skill-web-search .
+
+    kg:agent-dispatch a openclaw:Agent ;
+        openclaw:agentId "dispatch" ;
+        openclaw:createdAt "2026-02-28T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Dispatch agent. Monitors Bitable changes, assigns tasks to drivers/workers, follows up, and generates closure reports." ;
+        openclaw:hasName "dispatch" .
+
+    kg:agent-field-execution a openclaw:Agent ;
+        openclaw:agentId "field-execution" ;
+        openclaw:createdAt "2026-02-28T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Field execution agent. Understands colloquial expressions (e.g., 'finished unloading'), handles photo uploads, updates status." ;
+        openclaw:hasName "field-execution" .
+
+    kg:agent-mas-business-automation a openclaw:Agent ;
+        openclaw:agentId "mas-business-automation" ;
+        openclaw:createdAt "2026-02-28T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Multi-agent system orchestrator. Hub-and-spoke architecture with Feishu Bitable as central hub and specialized agents at the edges." ;
+        openclaw:hasName "mas-business-automation" .
+}
+
+{
+    kg:agent-memory-manager a openclaw:Agent ;
+        openclaw:agentId "memory-manager" ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "Memory Manager" ;
+        openclaw:hasWorkspace kg:workspace-memory-manager ;
+        openclaw:isDefaultAgent "false" ;
+        openclaw:modelRef "minimax-portal/MiniMax-M2.7" ;
+        openclaw:usesProvider kg:provider-minimax-portal ;
+        openclaw:usesSkill kg:skill-memory-sync .
+
+    kg:agent-search a openclaw:Agent ;
+        openclaw:agentId "search" ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "Search Agent" ;
+        openclaw:hasWorkspace kg:workspace-search ;
+        openclaw:isDefaultAgent "false" ;
+        openclaw:modelRef "minimax-portal/MiniMax-M2.7" ;
+        openclaw:usesProvider kg:provider-minimax-portal .
+
+    kg:agent-skill-manager a openclaw:Agent ;
+        openclaw:agentId "skill-manager" ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "Skill Manager" ;
+        openclaw:hasWorkspace kg:workspace-skill-manager ;
+        openclaw:isDefaultAgent "false" ;
+        openclaw:modelRef "minimax-portal/MiniMax-M2.7" ;
+        openclaw:usesProvider kg:provider-minimax-portal ;
+        openclaw:usesSkill kg:skill-clawhub-install,
+            kg:skill-clawhub-publish,
+            kg:skill-clawhub-search,
+            kg:skill-clawhub-update,
+            kg:skill-skill-inventory,
+            kg:skill-skill-lifecycle .
+
+    kg:agent-workspace-manager a openclaw:Agent ;
+        openclaw:agentId "workspace-manager" ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "Workspace Manager" ;
+        openclaw:hasWorkspace kg:workspace-workspace-manager ;
+        openclaw:isDefaultAgent "false" ;
+        openclaw:modelRef "minimax-portal/MiniMax-M2.7" ;
+        openclaw:usesProvider kg:provider-minimax-portal .
+
+    kg:binding-customer-manager-feishu-customer-manager a openclaw:Binding ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "customer-manager→feishu/customer-manager" ;
+        openclaw:matchesChannel kg:channel-feishu ;
+        openclaw:matchesPeerId "ou_949a455ce41a4a92cb574a9d4e5f2867" ;
+        openclaw:routesToAgent kg:agent-customer-manager .
+
+    kg:binding-main-feishu-main a openclaw:Binding ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "main→feishu/main" ;
+        openclaw:matchesChannel kg:channel-feishu ;
+        openclaw:matchesPeerId "ou_949a455ce41a4a92cb574a9d4e5f2867" ;
+        openclaw:routesToAgent kg:agent-main .
+
+    kg:plugin-feishu a openclaw:Plugin ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "feishu" ;
+        openclaw:isPlugin "true" ;
+        openclaw:version "2026.3.13" .
+
+    kg:session-cron-memory-sync a openclaw:Session ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "Memory Manager Sync Cron" ;
+        openclaw:sessionId "cron-memory-sync" .
+
+    kg:session-cron-morning-briefing a openclaw:Session ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "Morning Briefing Cron" ;
+        openclaw:sessionId "cron-morning-briefing" .
+
+    kg:agent-business-manager a openclaw:Agent ;
+        openclaw:agentId "business-manager" ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "Business Manager" ;
+        openclaw:isDefaultAgent "false" ;
+        openclaw:modelRef "minimax-portal/MiniMax-M2.7" ;
+        openclaw:usesProvider kg:provider-minimax-portal ;
+        openclaw:usesSkill kg:skill-bitable .
+
+    kg:agent-dispatch a openclaw:Agent ;
+        openclaw:agentId "dispatch" ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "Dispatch Agent" ;
+        openclaw:isDefaultAgent "false" ;
+        openclaw:modelRef "minimax-portal/MiniMax-M2.7" ;
+        openclaw:usesProvider kg:provider-minimax-portal ;
+        openclaw:usesSkill kg:skill-bitable .
+
+    kg:agent-field-execution a openclaw:Agent ;
+        openclaw:agentId "field-execution" ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "Field Execution" ;
+        openclaw:isDefaultAgent "false" ;
+        openclaw:modelRef "minimax-portal/MiniMax-M2.7" ;
+        openclaw:usesProvider kg:provider-minimax-portal ;
+        openclaw:usesSkill kg:skill-bitable,
+            kg:skill-understand-image .
+
+    kg:agent-mas-business-automation a openclaw:Agent ;
+        openclaw:agentId "mas-business-automation" ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "MAS Business" ;
+        openclaw:isDefaultAgent "false" ;
+        openclaw:modelRef "minimax-portal/MiniMax-M2.7" ;
+        openclaw:usesProvider kg:provider-minimax-portal .
+
+    kg:agent-customer-manager a openclaw:Agent ;
+        openclaw:agentId "customer-manager" ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "Customer Manager" ;
+        openclaw:isDefaultAgent "false" ;
+        openclaw:modelRef "minimax-portal/MiniMax-M2.7" ;
+        openclaw:usesProvider kg:provider-minimax-portal ;
+        openclaw:usesSkill kg:skill-bitable .
+
+    kg:agent-main a openclaw:Agent ;
+        openclaw:agentId "main" ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "Claw" ;
+        openclaw:hasWorkspace kg:workspace-main ;
+        openclaw:isDefaultAgent "true" ;
+        openclaw:modelRef "minimax-portal/MiniMax-M2.7" ;
+        openclaw:usesProvider kg:provider-minimax-portal ;
+        openclaw:usesSkill kg:skill-agent-registry,
+            kg:skill-knowledge-graph,
+            kg:skill-microsoft-graph-calendar,
+            kg:skill-ontology,
+            kg:skill-spawn-agent,
+            kg:skill-understand-image,
+            kg:skill-weather,
+            kg:skill-web-search .
+
+    kg:skill-clawhub-install a openclaw:Skill ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasDescription "Install a skill from ClawhHub by name." ;
+        openclaw:hasName "clawhub-install" ;
+        openclaw:hasTriggerCondition "Install a skill from ClawhHub" .
+
+    kg:skill-clawhub-publish a openclaw:Skill ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasDescription "Publish an installed skill to ClawhHub registry." ;
+        openclaw:hasName "clawhub-publish" ;
+        openclaw:hasTriggerCondition "Publish a skill to ClawhHub" .
+
+    kg:skill-clawhub-search a openclaw:Skill ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasDescription "Search ClawhHub skill registry." ;
+        openclaw:hasName "clawhub-search" ;
+        openclaw:hasTriggerCondition "Search ClawhHub for available skills" .
+
+    kg:skill-clawhub-update a openclaw:Skill ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasDescription "Check and apply updates to installed skills." ;
+        openclaw:hasName "clawhub-update" ;
+        openclaw:hasTriggerCondition "Update an installed skill from ClawhHub" .
+
+    kg:skill-memory-sync a openclaw:Skill ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasDescription "Synchronize memory across sessions." ;
+        openclaw:hasName "memory-sync" ;
+        openclaw:hasTriggerCondition "Memory sync processor" .
+
+    kg:skill-skill-inventory a openclaw:Skill ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasDescription "List and describe all installed skills." ;
+        openclaw:hasName "skill-inventory" ;
+        openclaw:hasTriggerCondition "Track installed skills" .
+
+    kg:skill-skill-lifecycle a openclaw:Skill ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasDescription "Install, update, remove skills." ;
+        openclaw:hasName "skill-lifecycle" ;
+        openclaw:hasTriggerCondition "Manage skill lifecycle operations" .
+
+    kg:workspace-main a openclaw:Workspace ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "main" ;
+        openclaw:hasSkillPath "/home/shiyao/.openclaw/workspace" .
+
+    kg:workspace-memory-manager a openclaw:Workspace ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "memory-manager" ;
+        openclaw:hasSkillPath "/home/shiyao/.openclaw/workspace-memory-manager" .
+
+    kg:workspace-search a openclaw:Workspace ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "search" ;
+        openclaw:hasSkillPath "/home/shiyao/.openclaw/workspace-search" .
+
+    kg:workspace-skill-manager a openclaw:Workspace ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "skill-manager" ;
+        openclaw:hasSkillPath "/home/shiyao/.openclaw/workspace-skill-manager" .
+
+    kg:workspace-workspace-manager a openclaw:Workspace ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "workspace-manager" ;
+        openclaw:hasSkillPath "/home/shiyao/.openclaw/workspace-workspace-manager" .
+
+    kg:channel-feishu a openclaw:Channel ;
+        openclaw:accountId "main" ;
+        openclaw:channelType "feishu" ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "feishu" ;
+        openclaw:isPlugin "true" .
+
+    kg:skill-bitable a openclaw:Skill ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasDescription "Feishu Bitable API skill for reading and writing records." ;
+        openclaw:hasName "bitable" ;
+        openclaw:hasTriggerCondition "Feishu Bitable API skill - read/write records" .
+
+    kg:provider-minimax-portal a openclaw:Provider ;
+        openclaw:createdAt "2026-04-02T06:06:51Z" ;
+        openclaw:hasName "minimax-portal" ;
+        openclaw:isLocalProvider "false" ;
+        openclaw:modelRef "minimax-portal/MiniMax-M2.7" ;
+        openclaw:providerName "MiniMax Portal" .
+}
+
+<urn:openclaw:graph:meta> {
+    <urn:openclaw:graph:meta> owl:versionInfo "0.1.0" ;
+        openclaw:createdAt "2026-04-01T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:updatedAt "2026-04-01T11:50:00+00:00"^^xsd:dateTime .
+}
+
+<urn:openclaw:graph:concepts> {
+    kg:concept-hub-and-spoke a openclaw:Concept ;
+        openclaw:createdAt "2026-02-28T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Multi-agent pattern: central Feishu Bitable hub with specialized edge agents (business-manager, dispatch, field-execution)." ;
+        openclaw:hasName "Hub-and-Spoke Architecture" .
+
+    kg:concept-ontology-debug a openclaw:Concept ;
+        openclaw:createdAt "2026-04-01T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "SHACL validation issues with xsd:anyURI for https URLs - use xsd:string instead. Prefixed names cannot contain '/' - use full URIs." ;
+        openclaw:hasName "Ontology Skill Debugging" .
+}
+
+<urn:openclaw:graph:skills> {
+    kg:skill-business-manager-agent a openclaw:Skill ;
+        openclaw:createdAt "2026-02-28T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Business manager skill for parsing orders and writing to Feishu Bitable." ;
+        openclaw:hasName "business-manager-agent" ;
+        openclaw:hasTriggerCondition "Business manager skill for parsing orders and writing to Feishu Bitable." .
+
+    kg:skill-dispatch-agent a openclaw:Skill ;
+        openclaw:createdAt "2026-02-28T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Dispatch skill for task distribution and follow-up." ;
+        openclaw:hasName "dispatch-agent" ;
+        openclaw:hasTriggerCondition "Dispatch skill for task distribution and follow-up." .
+
+    kg:skill-field-execution-agent a openclaw:Skill ;
+        openclaw:createdAt "2026-02-28T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Field execution skill for status updates and photo handling." ;
+        openclaw:hasName "field-execution-agent" ;
+        openclaw:hasTriggerCondition "Field execution skill for status updates and photo handling." .
+
+    kg:skill-mas-business-automation a openclaw:Skill ;
+        openclaw:createdAt "2026-02-28T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Multi-agent business automation system overview. Hub-and-spoke pattern with Feishu Bitable as central data store." ;
+        openclaw:hasName "mas-business-automation" ;
+        openclaw:hasTriggerCondition "Multi-agent business automation system overview. Hub-and-spoke pattern with Feishu Bitable as central data store." .
+
+    kg:skill-create-agent a openclaw:Skill ;
+        openclaw:createdAt "2026-04-01T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Create a new sub-agent with proper workspace, config, and bootstrap files." ;
+        openclaw:hasName "create-agent" ;
+        openclaw:hasTriggerCondition "Create a new sub-agent with proper workspace, config, and bootstrap files." .
+
+    kg:skill-agent-registry a openclaw:Skill ;
+        openclaw:createdAt "2026-04-01T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Track all agents and their capabilities - dynamically reads config." ;
+        openclaw:hasName "agent-registry" ;
+        openclaw:hasTriggerCondition "Track all agents and their capabilities - dynamically reads config." .
+
+    kg:skill-knowledge-graph a openclaw:Skill ;
+        openclaw:createdAt "2026-04-01T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Manage data instances and query resources from the Knowledge Graph runtime." ;
+        openclaw:hasName "knowledge-graph" ;
+        openclaw:hasTriggerCondition "Manage data instances and query resources from the Knowledge Graph runtime." .
+
+    kg:skill-microsoft-graph-calendar a openclaw:Skill ;
+        openclaw:createdAt "2026-04-01T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Microsoft Graph Calendar Skill." ;
+        openclaw:hasName "microsoft-graph-calendar" ;
+        openclaw:hasTriggerCondition "Microsoft Graph Calendar Skill." .
+
+    kg:skill-ontology a openclaw:Skill ;
+        openclaw:createdAt "2026-04-01T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Manages the OpenClaw Core Ontology." ;
+        openclaw:hasName "ontology" ;
+        openclaw:hasTriggerCondition "Manages the OpenClaw Core Ontology." .
+
+    kg:skill-spawn-agent a openclaw:Skill ;
+        openclaw:createdAt "2026-04-01T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Spawn subagents to handle specific tasks - use registry to discover agents first." ;
+        openclaw:hasName "spawn-agent" ;
+        openclaw:hasTriggerCondition "Spawn subagents to handle specific tasks - use registry to discover agents first." .
+
+    kg:skill-weather a openclaw:Skill ;
+        openclaw:createdAt "2026-04-01T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Get current weather and forecasts." ;
+        openclaw:hasName "weather" ;
+        openclaw:hasTriggerCondition "Get current weather and forecasts." .
+
+    kg:skill-web-search a openclaw:Skill ;
+        openclaw:createdAt "2026-04-01T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "MiniMax web search tool - search the internet for information." ;
+        openclaw:hasName "web-search" ;
+        openclaw:hasTriggerCondition "MiniMax web search tool - search the internet for information." .
+
+    kg:skill-understand-image a openclaw:Skill ;
+        openclaw:createdAt "2026-04-01T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "MiniMax image understanding tool - analyze image content." ;
+        openclaw:hasName "understand-image" ;
+        openclaw:hasTriggerCondition "MiniMax image understanding tool - analyze image content." .
+}
+
+<urn:openclaw:graph:memories> {
+    kg:memory-feishu-customer-manager a openclaw:Memory ;
+        openclaw:createdAt "2026-03-05T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Feishu Bitable configuration for customer management. App Token: NognbDfvdaHs1Ps2Ugxc2zEAnlh, Table ID: tbldKLrI73G8uNka." ;
+        openclaw:hasName "Feishu Customer Manager Bitable" ;
+        openclaw:memoryContent "Feishu Bitable configuration for customer management. App Token: NognbDfvdaHs1Ps2Ugxc2zEAnlh, Table ID: tbldKLrI73G8uNka." ;
+        openclaw:memoryType "derived" .
+
+    kg:memory-planner-removed a openclaw:Memory ;
+        openclaw:createdAt "2026-04-01T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Bill requested complete removal of planner agent. Calendar capabilities returned to Claw directly. Morning Briefing uses isolated session without planner identity." ;
+        openclaw:hasName "Planner Agent Removed" ;
+        openclaw:memoryContent "Bill requested complete removal of planner agent. Calendar capabilities returned to Claw directly. Morning Briefing uses isolated session without planner identity." ;
+        openclaw:memoryType "derived" .
+
+    kg:memory-xjtlu-symposium-2026 a openclaw:Memory ;
+        openclaw:createdAt "2026-03-05T00:00:00+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Bill is Student Chair for XJTLU Symposium on March 19-20, 2026. Chair training: March 12." ;
+        openclaw:hasName "XJTLU Postgraduate Research Symposium 2026" ;
+        openclaw:memoryContent "Bill is Student Chair for XJTLU Symposium on March 19-20, 2026. Chair training: March 12. Task: coordinate presenters, manage venue logistics, oversee student volunteers." ;
+        openclaw:memoryType "longterm" .
+}
+

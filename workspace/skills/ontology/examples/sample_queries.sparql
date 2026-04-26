@@ -1,0 +1,121 @@
+# OpenClaw Ontology — Sample SPARQL Queries
+# Run with: python scripts/sparql_query.py --kg examples/agent_example.ttl --query <query>
+#
+# PREFIX prefixes used below:
+#   PREFIX openclaw: <urn:openclaw:ontology#>
+#   PREFIX kg:       <urn:openclaw:kg:>
+
+# ── 1. List all Agents ───────────────────────────────────────────────────────
+
+PREFIX openclaw: <urn:openclaw:ontology#>
+SELECT ?agent ?id ?name WHERE {
+    ?agent a openclaw:Agent ;
+           openclaw:agentId ?id ;
+           openclaw:hasName ?name .
+}
+ORDER BY ?id
+
+# ── 2. Show all Channels with their type and account ─────────────────────────
+
+PREFIX openclaw: <urn:openclaw:ontology#>
+SELECT ?channel ?name ?type ?account WHERE {
+    ?channel a openclaw:Channel ;
+             openclaw:hasName ?name ;
+             openclaw:channelType ?type .
+    OPTIONAL { ?channel openclaw:accountId ?account . }
+}
+ORDER BY ?type
+
+# ── 3. Show all Bindings (routing rules) ─────────────────────────────────────
+
+PREFIX openclaw: <urn:openclaw:ontology#>
+SELECT ?binding ?bindingName ?agentName ?channelName WHERE {
+    ?binding a openclaw:Binding ;
+             openclaw:hasName ?bindingName ;
+             openclaw:routesToAgent ?agent ;
+             openclaw:matchesChannel ?channel .
+    ?agent   openclaw:hasName ?agentName .
+    ?channel openclaw:hasName ?channelName .
+}
+ORDER BY ?bindingName
+
+# ── 4. Which Agent uses which Provider? ──────────────────────────────────────
+
+PREFIX openclaw: <urn:openclaw:ontology#>
+SELECT ?agentName ?providerName ?modelRef WHERE {
+    ?agent    a openclaw:Agent ;
+              openclaw:hasName ?agentName ;
+              openclaw:usesProvider ?provider .
+    ?provider openclaw:providerName ?providerName .
+    OPTIONAL { ?provider openclaw:modelRef ?modelRef . }
+}
+
+# ── 5. List Skills with their precedence ─────────────────────────────────────
+
+PREFIX openclaw: <urn:openclaw:ontology#>
+SELECT ?skill ?name ?precedence ?trigger WHERE {
+    ?skill a openclaw:Skill ;
+           openclaw:hasName ?name ;
+           openclaw:hasTriggerCondition ?trigger .
+    OPTIONAL { ?skill openclaw:skillPrecedence ?precedence . }
+}
+ORDER BY DESC(?precedence)
+
+# ── 6. Find all Tools in a given group ───────────────────────────────────────
+
+PREFIX openclaw: <urn:openclaw:ontology#>
+SELECT ?tool ?name ?builtin WHERE {
+    ?tool a openclaw:Tool ;
+          openclaw:hasName ?name ;
+          openclaw:toolGroup "group:web" .
+    OPTIONAL { ?tool openclaw:isBuiltin ?builtin . }
+}
+
+# ── 7. Show all Agents assigned to a specific Channel type ───────────────────
+
+PREFIX openclaw: <urn:openclaw:ontology#>
+SELECT ?agentName ?channelType WHERE {
+    ?binding a openclaw:Binding ;
+             openclaw:routesToAgent ?agent ;
+             openclaw:matchesChannel ?channel .
+    ?agent   openclaw:hasName ?agentName .
+    ?channel openclaw:channelType ?channelType .
+}
+FILTER(?channelType = "whatsapp")
+
+# ── 8. What does the default Agent look like? ────────────────────────────────
+
+PREFIX openclaw: <urn:openclaw:ontology#>
+SELECT ?name ?agentId ?workspaceName WHERE {
+    ?agent a openclaw:Agent ;
+           openclaw:hasName ?name ;
+           openclaw:agentId ?agentId ;
+           openclaw:isDefaultAgent true .
+    OPTIONAL {
+        ?agent openclaw:hasWorkspace ?ws .
+        ?ws openclaw:hasName ?workspaceName .
+    }
+}
+
+# ── 9. Count entities per class ───────────────────────────────────────────────
+
+PREFIX openclaw: <urn:openclaw:ontology#>
+SELECT ?class (COUNT(?instance) AS ?count) WHERE {
+    VALUES ?class {
+        openclaw:Gateway openclaw:Agent openclaw:Channel openclaw:Session
+        openclaw:Binding openclaw:Skill openclaw:Tool openclaw:Memory
+        openclaw:Provider openclaw:Plugin openclaw:Workspace openclaw:Node
+    }
+    OPTIONAL { ?instance a ?class . }
+}
+GROUP BY ?class
+ORDER BY DESC(?count)
+
+# ── 10. Show all entries that have a docUrl ───────────────────────────────────
+
+PREFIX openclaw: <urn:openclaw:ontology#>
+SELECT ?entity ?name ?url WHERE {
+    ?entity openclaw:docUrl ?url .
+    OPTIONAL { ?entity openclaw:hasName ?name . }
+}
+ORDER BY ?name

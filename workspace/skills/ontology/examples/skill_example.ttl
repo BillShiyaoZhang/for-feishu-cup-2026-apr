@@ -1,0 +1,32 @@
+@prefix owl:       <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:      <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:       <http://www.w3.org/2001/XMLSchema#> .
+@prefix openclaw:  <urn:openclaw:ontology#> .
+@prefix kg:        <urn:openclaw:kg:> .
+
+###############################################################################
+# Example: A Skill instance in the Knowledge Graph
+#
+# In the actual KG (graph.trig), this would be wrapped in a named graph:
+#   GRAPH <urn:openclaw:graph:skills> { ... }
+###############################################################################
+
+kg:skill-ontology
+    a openclaw:Skill ;
+    openclaw:hasName               "ontology" ;
+    openclaw:hasDescription        """Manages the OpenClaw Core Ontology as a
+structured blueprint. Provides tools to view, validate, extend, and query
+the ontology and the Knowledge Graph it governs.""" ;
+    openclaw:hasTriggerCondition   """Activate when the user wants to view,
+manage, extend, or validate the OpenClaw system ontology. Also activate when
+gaps are found between the Knowledge Graph and the ontology definition, or
+when new concepts need to be formally added.""" ;
+    openclaw:hasSkillPath          "skills/ontology" ;
+    openclaw:skillPrecedence       6 ;
+    openclaw:isUserInvocable       true ;
+    openclaw:disableModelInvocation false ;
+    openclaw:version               "0.2.0" ;
+    openclaw:docUrl                <https://docs.openclaw.ai/tools/skills> ;
+    openclaw:createdAt             "2026-04-01T00:00:00Z"^^xsd:dateTime ;
+    openclaw:updatedAt             "2026-04-01T00:00:00Z"^^xsd:dateTime .

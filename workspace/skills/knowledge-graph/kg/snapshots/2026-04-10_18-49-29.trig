@@ -1,0 +1,11 @@
+@prefix event: <http://purl.org/NAN/d/C4DM/event.owl#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix kg: <urn:openclaw:kg:> .
+@prefix openclaw: <urn:openclaw:ontology#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<urn:openclaw:graph:events-2026-Q2> {
+    # Events for 2026 Q2 (April - June)
+    # This file contains episodic/event memories partitioned by quarter.
+    # Managed by the knowledge-graph skill. Do not edit manually.
+}

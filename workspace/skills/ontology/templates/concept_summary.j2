@@ -1,0 +1,87 @@
+# {{ metadata.label }} — Natural Language Summary
+
+**Version:** {{ metadata.version }}
+{% if metadata.created %}**Created:** {{ metadata.created }}{% endif %}
+
+{{ metadata.comment }}
+
+---
+
+## Overview
+
+This ontology defines **{{ classes | length }} core classes** and the properties that connect them.
+It serves as the authoritative blueprint for the OpenClaw Knowledge Graph.
+
+---
+
+## Global Properties
+
+These properties apply to **all entity types** in the Knowledge Graph.
+
+{% for prop in global_props %}
+### `{{ prop.curie }}`
+
+| | |
+|---|---|
+| **Type** | {{ prop.kind }}Property |
+| **Range** | `{{ prop.range or "—" }}` |
+
+{{ prop.comment }}
+
+{% endfor %}
+
+---
+
+## Core Classes
+
+{% for cls in classes %}
+## `{{ cls.curie }}` — {{ cls.label }}
+
+{{ cls.comment }}
+
+{% if cls.properties %}
+### Properties
+
+| Property | Type | Range | Description |
+|----------|------|-------|-------------|
+{% for prop in cls.properties %}| `{{ prop.curie }}` | {{ prop.kind }} | `{{ prop.range or "—" }}` | {{ prop.comment | truncate(80) }} |
+{% endfor %}
+{% else %}
+_No class-specific properties defined. Uses only global properties._
+{% endif %}
+
+{% if cls.shacl %}
+### Constraints (SHACL)
+
+| Property Path | Min | Max | Datatype |
+|--------------|-----|-----|----------|
+{% for c in cls.shacl %}| `{{ c.path }}` | {{ c.minCount or "—" }} | {{ c.maxCount or "—" }} | `{{ c.datatype or "—" }}` |
+{% endfor %}
+{% endif %}
+
+---
+{% endfor %}
+
+## Knowledge Graph Format
+
+Instances conforming to this ontology are stored as **RDF TriG** (`.trig`).
+
+```
+kg/
+├── graph.trig              # Main Knowledge Graph (all named graphs)
+└── snapshots/
+    └── YYYY-MM-DD.trig     # Point-in-time snapshots
+```
+
+Instance URI pattern: `urn:openclaw:kg:{type}/{id}`
+Named graph pattern: `urn:openclaw:graph:{domain}`
+
+## Tools
+
+| Script | Purpose |
+|--------|---------|
+| `scripts/validate.py` | Run SHACL validation |
+| `scripts/nl_export.py` | Export this document |
+| `scripts/sparql_query.py` | Run SPARQL queries |
+| `scripts/discover_gaps.py` | Find uncovered KG concepts |
+| `scripts/add_concept.py` | Add new class or property |

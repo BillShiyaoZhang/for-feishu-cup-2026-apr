@@ -1,0 +1,631 @@
+@prefix sh:        <http://www.w3.org/ns/shacl#> .
+@prefix owl:       <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:      <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:       <http://www.w3.org/2001/XMLSchema#> .
+@prefix openclaw:  <urn:openclaw:ontology#> .
+@prefix foaf:      <http://xmlns.com/foaf/0.1/> .
+@prefix org:       <http://www.w3.org/ns/org#> .
+@prefix event:     <http://purl.org/NET/c4dm/event.owl#> .
+@prefix skos:      <http://www.w3.org/2004/02/skos/core#> .
+@prefix vcard:     <http://www.w3.org/2006/vcard/ns#> .
+@prefix time:      <http://www.w3.org/2006/time#> .
+
+###############################################################################
+# SHACL Shapes for OpenClaw Core Ontology v0.3.0
+# Aligned with https://docs.openclaw.ai
+#
+# Run with: python scripts/validate.py
+###############################################################################
+
+###############################################################################
+# Gateway Shape
+###############################################################################
+
+openclaw:GatewayShape
+    a sh:NodeShape ;
+    sh:targetClass openclaw:Gateway ;
+    rdfs:label   "GatewayShape" ;
+    rdfs:comment "Every Gateway must have a name and description." ;
+
+    sh:property [
+        sh:path     openclaw:hasName ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message  "A Gateway must have exactly one non-empty hasName." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:hasDescription ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message  "A Gateway must have at least one hasDescription." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:managesChannel ;
+        sh:class    openclaw:Channel ;
+        sh:message  "managesChannel must reference an openclaw:Channel." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:hostsAgent ;
+        sh:class    openclaw:Agent ;
+        sh:message  "hostsAgent must reference an openclaw:Agent." ;
+    ] .
+
+###############################################################################
+# Agent Shape
+###############################################################################
+
+openclaw:AgentShape
+    a sh:NodeShape ;
+    sh:targetClass openclaw:Agent ;
+    rdfs:label   "AgentShape" ;
+    rdfs:comment "Every Agent must have a name, description, and agentId." ;
+
+    sh:property [
+        sh:path     openclaw:hasName ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message  "An Agent must have exactly one non-empty hasName." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:hasDescription ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message  "An Agent must have at least one hasDescription." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:agentId ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message  "An Agent must have exactly one non-empty agentId." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:hasWorkspace ;
+        sh:class    openclaw:Workspace ;
+        sh:message  "hasWorkspace must reference an openclaw:Workspace." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:usesProvider ;
+        sh:class    openclaw:Provider ;
+        sh:message  "usesProvider must reference an openclaw:Provider." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:usesTool ;
+        sh:class    openclaw:Tool ;
+        sh:message  "usesTool must reference an openclaw:Tool." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:usesSkill ;
+        sh:class    openclaw:Skill ;
+        sh:message  "usesSkill must reference an openclaw:Skill." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:hasMemory ;
+        sh:class    openclaw:Memory ;
+        sh:message  "hasMemory must reference an openclaw:Memory." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:isDefaultAgent ;
+        sh:datatype xsd:boolean ;
+        sh:message  "isDefaultAgent must be xsd:boolean." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:knownAs ;
+        sh:class    foaf:Person ;
+        sh:message  "knownAs must reference a foaf:Person." ;
+    ] .
+
+###############################################################################
+# Workspace Shape
+###############################################################################
+
+openclaw:WorkspaceShape
+    a sh:NodeShape ;
+    sh:targetClass openclaw:Workspace ;
+    rdfs:label   "WorkspaceShape" ;
+    rdfs:comment "Every Workspace must have a name and a filesystem path." ;
+
+    sh:property [
+        sh:path     openclaw:hasName ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message  "A Workspace must have exactly one non-empty hasName." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:hasDescription ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message  "A Workspace must have at least one hasDescription." ;
+    ] .
+
+###############################################################################
+# Skill Shape
+###############################################################################
+
+openclaw:SkillShape
+    a sh:NodeShape ;
+    sh:targetClass openclaw:Skill ;
+    rdfs:label   "SkillShape" ;
+    rdfs:comment "Every Skill must have a name, description, and trigger condition." ;
+
+    sh:property [
+        sh:path     openclaw:hasName ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message  "A Skill must have exactly one non-empty hasName (= SKILL.md 'name' key)." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:hasDescription ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message  "A Skill must have at least one non-empty hasDescription." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:hasTriggerCondition ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message  "A Skill must have a hasTriggerCondition (= SKILL.md 'description' key)." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:skillPrecedence ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 1 ;
+        sh:maxInclusive 6 ;
+        sh:message  "skillPrecedence must be an integer 1–6." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:isUserInvocable ;
+        sh:datatype xsd:boolean ;
+        sh:message  "isUserInvocable must be xsd:boolean." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:disableModelInvocation ;
+        sh:datatype xsd:boolean ;
+        sh:message  "disableModelInvocation must be xsd:boolean." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:targetPlatform ;
+        sh:datatype xsd:string ;
+        sh:in       ( "darwin" "linux" "win32" ) ;
+        sh:message  "targetPlatform must be one of: darwin, linux, win32." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:dependsOn ;
+        sh:class    openclaw:Skill ;
+        sh:message  "dependsOn must reference another openclaw:Skill." ;
+    ] .
+
+###############################################################################
+# Tool Shape
+###############################################################################
+
+openclaw:ToolShape
+    a sh:NodeShape ;
+    sh:targetClass openclaw:Tool ;
+    rdfs:label   "ToolShape" ;
+    rdfs:comment "Every Tool must have a name and description." ;
+
+    sh:property [
+        sh:path     openclaw:hasName ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message  "A Tool must have exactly one non-empty hasName." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:hasDescription ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message  "A Tool must have at least one hasDescription." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:toolGroup ;
+        sh:datatype xsd:string ;
+        sh:in       ( "group:runtime" "group:fs" "group:sessions" "group:memory"
+                      "group:web" "group:ui" "group:automation" "group:messaging"
+                      "group:nodes" "group:openclaw" ) ;
+        sh:message  "toolGroup must be a recognized group:* value." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:isBuiltin ;
+        sh:datatype xsd:boolean ;
+        sh:message  "isBuiltin must be xsd:boolean." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:providedByPlugin ;
+        sh:class    openclaw:Plugin ;
+        sh:message  "providedByPlugin must reference an openclaw:Plugin." ;
+    ] .
+
+###############################################################################
+# Channel Shape
+###############################################################################
+
+openclaw:ChannelShape
+    a sh:NodeShape ;
+    sh:targetClass openclaw:Channel ;
+    rdfs:label   "ChannelShape" ;
+    rdfs:comment "Every Channel must have a name, description, and channelType." ;
+
+    sh:property [
+        sh:path     openclaw:hasName ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message  "A Channel must have exactly one non-empty hasName." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:hasDescription ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message  "A Channel must have at least one hasDescription." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:channelType ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:in       ( "whatsapp" "telegram" "discord" "slack" "signal" "imessage"
+                      "irc" "line" "googlechat" "mattermost" "matrix"
+                      "nextcloud-talk" "bluebubbles" "zalo" "zalouser" "nostr"
+                      "feishu" "qqbot" "synology-chat" "tlon" "twitch"
+                      "webchat" "wechat" ) ;
+        sh:message  "channelType must be a recognized OpenClaw channel identifier." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:isPlugin ;
+        sh:datatype xsd:boolean ;
+        sh:message  "isPlugin must be xsd:boolean." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:sendsMessageTo ;
+        sh:class    foaf:Person ;
+        sh:message  "sendsMessageTo must reference a foaf:Person." ;
+    ] .
+
+###############################################################################
+# Session Shape
+###############################################################################
+
+openclaw:SessionShape
+    a sh:NodeShape ;
+    sh:targetClass openclaw:Session ;
+    rdfs:label   "SessionShape" ;
+    rdfs:comment "Every Session must have a sessionId and dmScope." ;
+
+    sh:property [
+        sh:path     openclaw:sessionId ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message  "A Session must have exactly one non-empty sessionId." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:dmScope ;
+        sh:datatype xsd:string ;
+        sh:in       ( "main" "per-peer" "per-channel-peer" "per-account-channel-peer" ) ;
+        sh:message  "dmScope must be one of: main, per-peer, per-channel-peer, per-account-channel-peer." ;
+    ] .
+
+###############################################################################
+# Binding Shape
+###############################################################################
+
+openclaw:BindingShape
+    a sh:NodeShape ;
+    sh:targetClass openclaw:Binding ;
+    rdfs:label   "BindingShape" ;
+    rdfs:comment "Every Binding must route to an Agent and match at least one Channel." ;
+
+    sh:property [
+        sh:path     openclaw:routesToAgent ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class    openclaw:Agent ;
+        sh:message  "A Binding must reference exactly one routesToAgent (openclaw:Agent)." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:matchesChannel ;
+        sh:minCount 1 ;
+        sh:class    openclaw:Channel ;
+        sh:message  "A Binding must reference at least one matchesChannel (openclaw:Channel)." ;
+    ] .
+
+###############################################################################
+# Memory Shape
+###############################################################################
+
+openclaw:MemoryShape
+    a sh:NodeShape ;
+    sh:targetClass openclaw:Memory ;
+    rdfs:label   "MemoryShape" ;
+    rdfs:comment "Every Memory must have content and a type." ;
+
+    sh:property [
+        sh:path     openclaw:memoryContent ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message  "A Memory must have non-empty memoryContent." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:memoryType ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:in       ( "longterm" "daily" "derived" "event" "system" "feishu" ) ;
+        sh:message  "memoryType must be one of: longterm, daily, derived, event, system, feishu." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:memoryBackend ;
+        sh:datatype xsd:string ;
+        sh:in       ( "builtin" "qmd" "honcho" ) ;
+        sh:message  "memoryBackend must be one of: builtin, qmd, honcho." ;
+    ] ;
+    # Optional: only present when Memory links to other entity types
+    sh:property [
+        sh:path     openclaw:aboutPerson ;
+        sh:class    foaf:Person ;
+        sh:minCount 0 ;
+        sh:message  "aboutPerson must reference a foaf:Person." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:aboutEvent ;
+        sh:class    event:Event ;
+        sh:minCount 0 ;
+        sh:message  "aboutEvent must reference an event:Event." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:aboutTopic ;
+        sh:datatype xsd:string ;
+        sh:minCount 0 ;
+        sh:message  "aboutTopic must be xsd:string." ;
+    ] .
+
+###############################################################################
+# Provider Shape
+###############################################################################
+
+openclaw:ProviderShape
+    a sh:NodeShape ;
+    sh:targetClass openclaw:Provider ;
+    rdfs:label   "ProviderShape" ;
+    rdfs:comment "Every Provider must have a name and providerName." ;
+
+    sh:property [
+        sh:path     openclaw:hasName ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message  "A Provider must have exactly one non-empty hasName." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:providerName ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message  "A Provider must have exactly one non-empty providerName." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:isLocalProvider ;
+        sh:datatype xsd:boolean ;
+        sh:message  "isLocalProvider must be xsd:boolean." ;
+    ] .
+
+###############################################################################
+# Plugin Shape
+###############################################################################
+
+openclaw:PluginShape
+    a sh:NodeShape ;
+    sh:targetClass openclaw:Plugin ;
+    rdfs:label   "PluginShape" ;
+    rdfs:comment "Every Plugin must have a name and description." ;
+
+    sh:property [
+        sh:path     openclaw:hasName ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message  "A Plugin must have exactly one non-empty hasName." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:hasDescription ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message  "A Plugin must have at least one hasDescription." ;
+    ] .
+
+###############################################################################
+# Concept Shape
+###############################################################################
+
+openclaw:ConceptShape
+    a sh:NodeShape ;
+    sh:targetClass openclaw:Concept ;
+    rdfs:label   "ConceptShape" ;
+    rdfs:comment "Every Concept must have a name and description." ;
+
+    sh:property [
+        sh:path     openclaw:hasName ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message  "A Concept must have exactly one non-empty hasName." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:hasDescription ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message  "A Concept must have at least one hasDescription." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:aboutTopic ;
+        sh:datatype xsd:string ;
+        sh:message  "aboutTopic must be xsd:string." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:relatedTo ;
+        sh:nodeKind sh:BlankNodeOrIRI ;
+        sh:message  "relatedTo must reference a named node or IRI (any entity type)." ;
+    ] .
+
+###############################################################################
+# Person Extension Shape
+###############################################################################
+
+# Note: We do NOT constrain foaf:Person directly (that class belongs to FOAF).
+# Instead we validate the openclaw-specific extension properties that may be
+# attached to foaf:Person instances.
+
+openclaw:PersonExtShape
+    a sh:NodeShape ;
+    sh:targetSubjectsOf openclaw:preferredPeer ;
+    rdfs:label   "PersonExtShape" ;
+    rdfs:comment "Validates openclaw extension properties on foaf:Person nodes." ;
+
+    sh:property [
+        sh:path     openclaw:preferredPeer ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message  "preferredPeer must be a non-empty string (format: <channelType>:<peerId>)." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:language ;
+        sh:datatype xsd:string ;
+        sh:minLength 2 ;
+        sh:message  "language must be a non-empty BCP 47 language tag string." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:jobTitle ;
+        sh:datatype xsd:string ;
+        sh:message  "jobTitle must be xsd:string." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:note ;
+        sh:datatype xsd:string ;
+        sh:message  "note must be xsd:string." ;
+    ] .
+
+###############################################################################
+# Event Extension Shape
+###############################################################################
+
+# Validates the openclaw-specific extension properties on event:Event instances.
+
+openclaw:EventExtShape
+    a sh:NodeShape ;
+    sh:targetSubjectsOf openclaw:eventLabel ;
+    rdfs:label   "EventExtShape" ;
+    rdfs:comment "Validates openclaw extension properties on event:Event nodes." ;
+
+    sh:property [
+        sh:path     openclaw:eventLabel ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message  "eventLabel must be a non-empty string." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:eventNote ;
+        sh:datatype xsd:string ;
+        sh:message  "eventNote must be xsd:string." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:sourceMemory ;
+        sh:class    openclaw:Memory ;
+        sh:message  "sourceMemory must reference an openclaw:Memory." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:relatedTopic ;
+        sh:class    skos:Concept ;
+        sh:message  "relatedTopic must reference a skos:Concept." ;
+    ] .
+
+###############################################################################
+# Cross-entity: datetime format constraints
+###############################################################################
+
+openclaw:CreatedAtShape
+    a sh:NodeShape ;
+    sh:targetSubjectsOf openclaw:createdAt ;
+    sh:property [
+        sh:path     openclaw:createdAt ;
+        sh:datatype xsd:dateTime ;
+        sh:message  "createdAt must be xsd:dateTime." ;
+    ] .
+
+openclaw:UpdatedAtShape
+    a sh:NodeShape ;
+    sh:targetSubjectsOf openclaw:updatedAt ;
+    sh:property [
+        sh:path     openclaw:updatedAt ;
+        sh:datatype xsd:dateTime ;
+        sh:message  "updatedAt must be xsd:dateTime." ;
+    ] .
+
+openclaw:DocUrlShape
+    a sh:NodeShape ;
+    sh:targetSubjectsOf openclaw:docUrl ;
+    sh:property [
+        sh:path     openclaw:docUrl ;
+        sh:nodeKind sh:IRI ;
+        sh:message  "docUrl must be a valid IRI (e.g. wrapped in <...>)." ;
+    ] .
+
+###############################################################################
+# Location Shape
+###############################################################################
+
+openclaw:LocationShape
+    a sh:NodeShape ;
+    sh:targetClass openclaw:Location ;
+    rdfs:label   "LocationShape" ;
+    rdfs:comment "Every Location must have a name and description." ;
+
+    sh:property [
+        sh:path     openclaw:hasName ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message  "A Location must have exactly one non-empty hasName." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:hasDescription ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message  "A Location must have at least one hasDescription." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:locationNote ;
+        sh:datatype xsd:string ;
+        sh:message  "locationNote must be xsd:string." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:hasAddress ;
+        sh:class    vcard:Address ;
+        sh:message  "hasAddress must reference a vcard:Address." ;
+    ] ;
+    sh:property [
+        sh:path     openclaw:locatedAt ;
+        sh:nodeKind sh:BlankNodeOrIRI ;
+        sh:message  "locatedAt can reference any entity (e.g. foaf:Person, event:Event)." ;
+    ] .

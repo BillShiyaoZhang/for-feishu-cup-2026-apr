@@ -1,0 +1,167 @@
+###############################################################################
+# person_event_example.ttl
+#
+# Multi-vocabulary KG sample for OpenClaw Ontology v0.3.0.
+# Demonstrates how foaf:, vcard:, org:, event:, skos:, time: and openclaw:
+# work together to model a person, an organization, an event, a topic,
+# and a linked memory entry.
+#
+# Run SHACL validation: python skills/ontology/scripts/validate.py
+###############################################################################
+
+@prefix owl:       <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:      <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:       <http://www.w3.org/2001/XMLSchema#> .
+@prefix openclaw:  <urn:openclaw:ontology#> .
+
+# External vocabulary building blocks
+@prefix foaf:      <http://xmlns.com/foaf/0.1/> .
+@prefix vcard:     <http://www.w3.org/2006/vcard/ns#> .
+@prefix org:       <http://www.w3.org/ns/org#> .
+@prefix event:     <http://purl.org/NET/c4dm/event.owl#> .
+@prefix skos:      <http://www.w3.org/2004/02/skos/core#> .
+@prefix time:      <http://www.w3.org/2006/time#> .
+
+# Instance namespace
+@prefix ex:        <urn:openclaw:kg:example#> .
+
+###############################################################################
+# ── ORGANIZATION ─────────────────────────────────────────────────────────────
+# Using W3C ORG Ontology (org:)
+###############################################################################
+
+ex:AcmeCorp
+    a org:Organization ;
+    foaf:name        "Acme Corporation" ;
+    vcard:hasAddress ex:AcmeAddress .
+
+ex:AcmeAddress
+    a vcard:Address ;
+    vcard:locality      "Shanghai" ;
+    vcard:country-name  "China" .
+
+ex:RoleEngineer
+    a org:Role ;
+    rdfs:label "Software Engineer" .
+
+###############################################################################
+# ── PERSON ───────────────────────────────────────────────────────────────────
+# Using FOAF (foaf:) for core identity and social links,
+# W3C vCard (vcard:) for contact details,
+# W3C ORG (org:) for organizational membership.
+###############################################################################
+
+ex:alice
+    a foaf:Person ;
+    foaf:name        "Alice Zhang" ;
+    foaf:familyName  "Zhang" ;
+    foaf:givenName   "Alice" ;
+    foaf:nick        "小张" ;
+    foaf:knows       ex:bob ;
+
+    # Contact info — W3C vCard
+    vcard:hasEmail     <mailto:alice@example.com> ;
+    vcard:hasTelephone <tel:+8613900001234> ;
+
+    # Organizational relationship — W3C ORG
+    org:memberOf       ex:AcmeCorp ;
+    org:hasMembership  ex:AliceMembership ;
+
+    # OpenClaw extensions
+    openclaw:preferredPeer  "whatsapp:+8613900001234" ;
+    openclaw:language       "zh-Hans" ;
+    openclaw:language       "en" ;
+    openclaw:jobTitle       "Senior Software Engineer" ;
+    openclaw:note           "Alice leads the backend team. Prefers WeChat for quick messages, email for formal requests." .
+
+ex:AliceMembership
+    a org:Membership ;
+    org:member        ex:alice ;
+    org:organization  ex:AcmeCorp ;
+    org:role          ex:RoleEngineer .
+
+ex:bob
+    a foaf:Person ;
+    foaf:name        "Bob Li" ;
+    foaf:familyName  "Li" ;
+    foaf:givenName   "Bob" ;
+    vcard:hasEmail   <mailto:bob@example.com> ;
+    openclaw:preferredPeer "telegram:987654321" ;
+    openclaw:language      "zh-Hans" ;
+    openclaw:jobTitle      "Product Manager" .
+
+###############################################################################
+# ── TOPIC ────────────────────────────────────────────────────────────────────
+# Using SKOS (skos:) for concept/topic hierarchy.
+###############################################################################
+
+ex:TopicBackendArch
+    a skos:Concept ;
+    skos:prefLabel  "Backend Architecture"@en ;
+    skos:prefLabel  "后端架构"@zh-Hans ;
+    skos:altLabel   "Backend Design"@en ;
+    skos:broader    ex:TopicSoftwareEngineering ;
+    skos:note       "Includes microservices, API design, database selection, and system scalability." .
+
+ex:TopicSoftwareEngineering
+    a skos:Concept ;
+    skos:prefLabel  "Software Engineering"@en ;
+    skos:prefLabel  "软件工程"@zh-Hans .
+
+###############################################################################
+# ── EVENT ────────────────────────────────────────────────────────────────────
+# Using Event Ontology (event:) for the event structure,
+# OWL-Time (time:) for the temporal interval,
+# foaf: for participant reference, vcard: for location.
+###############################################################################
+
+ex:Q1PlanningMeeting
+    a event:Event ;
+
+    # Event Ontology core properties
+    event:agent   ex:alice ;     # primary participant
+    event:agent   ex:bob ;       # also participated
+    event:place   ex:MeetingRoom101 ;
+    event:time    ex:Q1MeetingInterval ;
+
+    # OpenClaw extensions for event:Event
+    openclaw:eventLabel   "Q1 Architecture Planning Meeting" ;
+    openclaw:eventNote    "Decided to migrate to microservices by Q3. Alice to draft the architecture proposal by April 15." ;
+    openclaw:sourceMemory ex:MemoryQ1Meeting .
+
+ex:MeetingRoom101
+    a vcard:Address ;
+    vcard:locality     "Shanghai" ;
+    vcard:street-address "101 Tech Park, Room A302" .
+
+ex:Q1MeetingInterval
+    a time:ProperInterval ;
+    time:hasBeginning [
+        a time:Instant ;
+        time:inXSDDateTimeStamp "2026-03-15T14:00:00+08:00"^^xsd:dateTimeStamp
+    ] ;
+    time:hasEnd [
+        a time:Instant ;
+        time:inXSDDateTimeStamp "2026-03-15T16:00:00+08:00"^^xsd:dateTimeStamp
+    ] .
+
+###############################################################################
+# ── MEMORY ───────────────────────────────────────────────────────────────────
+# openclaw:Memory links back to the people, event, and topic.
+###############################################################################
+
+ex:MemoryQ1Meeting
+    a event:Event ;
+    openclaw:hasDescription  """Q1架构规划会议。Alice和Bob确认Q3前完成微服务迁移。Alice负责在4月15日前提交架构方案。会议地点：A302室。""" ;
+    openclaw:eventType      "meeting" ;
+    openclaw:sourceFile      "~/.openclaw/workspace/skills/knowledge-graph/kg/graph-events-2026-Q1.trig" ;
+
+    # Event link properties — connect this event to people in the KG
+    event:agent             ex:person-alice, ex:person-bob ;
+    event:location          ex:location-A302 ;
+    openclaw:aboutEvent     ex:Q1PlanningMeeting ;
+    openclaw:aboutTopic    "backend-architecture" ;
+
+    openclaw:createdAt  "2026-03-15T16:30:00+08:00"^^xsd:dateTime ;
+    openclaw:updatedAt  "2026-03-15T16:30:00+08:00"^^xsd:dateTime .
