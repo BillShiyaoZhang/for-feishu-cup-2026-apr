@@ -3,9 +3,9 @@
 @prefix rdfs:      <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd:       <http://www.w3.org/2001/XMLSchema#> .
 @prefix dcterms:   <http://purl.org/dc/terms/> .
-@prefix openclaw:  <urn:openclaw:ontology#> .
+@prefix pulsefit:  <urn:pulsefit:ontology#> .
 
-# ── External vocabulary prefixes (used as building blocks) ────────────────────
+# ── 标准词汇复用 ────────────────────────────────────────────────────────────
 @prefix foaf:      <http://xmlns.com/foaf/0.1/> .
 @prefix vcard:     <http://www.w3.org/2006/vcard/ns#> .
 @prefix org:       <http://www.w3.org/ns/org#> .
@@ -14,881 +14,608 @@
 @prefix time:      <http://www.w3.org/2006/time#> .
 
 ###############################################################################
-# OpenClaw Core Ontology
-# Source: https://docs.openclaw.ai
+# PulseFit 网红营销Knowledge Agent 核心本体
 ###############################################################################
 
-<urn:openclaw:ontology>
+<urn:pulsefit:ontology>
     a owl:Ontology ;
-    owl:versionIRI     <urn:openclaw:ontology:v0.3.0> ;
-    owl:priorVersion   <urn:openclaw:ontology:v0.2.0> ;
-    owl:versionInfo    "0.3.0" ;
-    rdfs:label         "OpenClaw Core Ontology" ;
-    rdfs:comment       """Defines the core concepts, properties and constraints
-of the OpenClaw AI assistant system, aligned with the official documentation
-at https://docs.openclaw.ai. This ontology serves as the blueprint for the
-OpenClaw Knowledge Graph.
-
-This ontology follows a "best vocabulary" composition strategy: it directly
-reuses established standard vocabularies as building blocks rather than
-reinventing their concepts under the openclaw: prefix:
-  - foaf:Person / foaf:knows / foaf:name …  (FOAF 2014)
-  - vcard:Address / vcard:hasEmail …         (W3C vCard Ontology 2014)
-  - org:Organization / org:memberOf …        (W3C ORG Ontology, Rec 2014)
-  - event:Event / event:agent / event:time … (Event Ontology, c4dm)
-  - skos:Concept / skos:broader …            (SKOS 2009)
-  - time:Interval / time:hasBeginning …      (OWL-Time, W3C 2022)
-
-The openclaw: namespace is reserved for:
-  (a) System-layer concepts (Gateway, Agent, Channel, etc.)
-  (b) Bridge properties connecting the system layer to world-knowledge classes
-  (c) Extensions expressing OpenClaw-specific semantics not covered by standards""" ;
-    dcterms:creator    "OpenClaw" ;
-    dcterms:created    "2026-04-01"^^xsd:date ;
-    dcterms:modified   "2026-04-02"^^xsd:date ;
-    dcterms:license    <https://creativecommons.org/licenses/by/4.0/> .
+    owl:versionIRI     <urn:pulsefit:ontology:v1.0.0> ;
+    owl:versionInfo    "1.0.0" ;
+    rdfs:label         "PulseFit Influencer Marketing Knowledge Agent Ontology" ;
+    rdfs:comment       """核心本体定义，覆盖网红合作全流程5幕所有场景：
+1. 基础通用层：人员、组织、地址、事件、文档
+2. 营销核心层：网红、产品、活动、合同、交付内容
+3. 企业流程层：审批流、发货、付款
+4. 规则知识层：SOP规则、决策偏好、匹配规则""" ;
+    dcterms:creator    "PulseFit KnowAgent Team" ;
+    dcterms:created    "2026-04-28"^^xsd:date .
 
 ###############################################################################
-# ── CORE CLASSES ─────────────────────────────────────────────────────────────
+# ── 第一层：基础通用层 (覆盖全场景通用实体) ───────────────────────────────────
 ###############################################################################
 
-# ── Infrastructure ────────────────────────────────────────────────────────────
-
-openclaw:Gateway
+# ── 人员 (覆盖所有Act的人员角色：员工、博主等) ───────────────────────────────
+pulsefit:Person
     a owl:Class ;
-    rdfs:label   "Gateway" ;
-    rdfs:comment """The single long-lived daemon process that is the central
-"source of truth" for the OpenClaw system. The Gateway:
-- Owns all messaging channel connections (WhatsApp via Baileys, Telegram via
-  grammY, Slack, Discord, Signal, iMessage, WebChat, etc.)
-- Exposes a typed WebSocket API on the configured bind host (default
-  127.0.0.1:18789).
-- Manages agent sessions, routing, memory, and tool execution.
-- Serves the Web UI and Canvas host at /__openclaw__/canvas/.
-- Emits events: agent, chat, presence, health, heartbeat, cron.
-One Gateway controls exactly one Baileys (WhatsApp) session per host.
-Reference: https://docs.openclaw.ai/concepts/architecture""" .
+    rdfs:label   "Person" ;
+    rdfs:comment "通用人员实体，包含内部员工、外部网红、合作方人员等所有角色" ;
+    rdfs:subClassOf foaf:Person .
 
-openclaw:Node
+pulsefit:Employee
     a owl:Class ;
-    rdfs:label   "Node" ;
-    rdfs:comment """A client device (macOS App, iOS App, Android App, or headless
-process) that connects to the Gateway over WebSocket with role "node". Nodes:
-- Declare a device identity on connect; pairing is device-based.
-- Expose platform-specific tool commands such as canvas.*, camera.*,
-  screen.record, location.get.
-- Are trusted after explicit pairing approval; pairing is stored in the
-  device pairing store.
-Reference: https://docs.openclaw.ai/concepts/architecture""" .
+    rdfs:label   "Employee" ;
+    rdfs:comment "内部员工：实习生、Mentor、同事、管理员等" ;
+    rdfs:subClassOf pulsefit:Person .
 
-openclaw:Provider
+pulsefit:Influencer
     a owl:Class ;
-    rdfs:label   "Provider" ;
-    rdfs:comment """An LLM (Large Language Model) service integration. OpenClaw
-supports 35+ providers, including OpenAI, Anthropic, Google Gemini, Ollama
-(local), and OpenRouter. Model references follow the format provider/model
-(e.g. anthropic/claude-sonnet-4-6). When the model ID itself contains /
-(OpenRouter-style), include the provider prefix.
-Reference: https://docs.openclaw.ai/providers""" .
+    rdfs:label   "Influencer" ;
+    rdfs:comment "外部网红/博主/KOL" ;
+    rdfs:subClassOf pulsefit:Person .
 
-# ── Agents ────────────────────────────────────────────────────────────────────
-
-openclaw:Agent
+# ── 组织与角色 ────────────────────────────────────────────────────────────
+pulsefit:Role
     a owl:Class ;
-    rdfs:label   "Agent" ;
-    rdfs:comment """An LLM-backed intelligent entity that executes tasks on
-behalf of the user. Each Agent has:
-- A dedicated Workspace (filesystem home for bootstrap files, skills, memory).
-- An agentId (default: "main").
-- A State directory at ~/.openclaw/agents/<agentId>/agent (auth profiles,
-  model registry, per-agent config).
-- A Session store at ~/.openclaw/agents/<agentId>/sessions/.
-- An Agent Loop that iteratively calls the LLM and invokes tools.
-Multiple agents can coexist on a single Gateway; routing directs inbound
-messages to the correct agent via Bindings.
-Reference: https://docs.openclaw.ai/concepts/agent""" .
+    rdfs:label   "Role" ;
+    rdfs:comment "人员角色：实习生、Mentor、物流、PM、审批人等" ;
+    rdfs:subClassOf org:Role .
 
-openclaw:Workspace
+pulsefit:Organization
     a owl:Class ;
-    rdfs:label   "Workspace" ;
-    rdfs:comment """The filesystem directory that is an Agent's home. Contains
-all files the agent reads and writes. Default location:
-~/.openclaw/workspace (or ~/.openclaw/workspace-<profile> when
-OPENCLAW_PROFILE is set). Key workspace files:
-- AGENTS.md    — operating instructions + memory usage rules (loaded every session)
-- SOUL.md      — persona, tone, boundaries (loaded every session)
-- USER.md      — user profile and preferred address (loaded every session)
-- IDENTITY.md  — agent name, vibe, emoji
-- TOOLS.md     — user-maintained notes on local tools and conventions
-- HEARTBEAT.md — optional checklist for heartbeat runs
-- BOOT.md      — optional startup checklist on gateway restart
-- BOOTSTRAP.md — one-time first-run ritual (deleted after completion)
-- MEMORY.md    — curated long-term memory (optional; private sessions only)
+    rdfs:label   "Organization" ;
+    rdfs:comment "组织实体：公司、部门、团队等" ;
+    rdfs:subClassOf org:Organization .
 
-- skills/      — workspace-specific skills (highest precedence)
-- canvas/      — Canvas UI files for node displays
-NOT in the workspace: openclaw.json config, credentials/, session transcripts,
-managed skills.
-Reference: https://docs.openclaw.ai/concepts/agent-workspace""" .
-
-# ── Skills & Tools ───────────────────────────────────────────────────────────
-
-openclaw:Skill
+# ── 地址与联系方式 ─────────────────────────────────────────────────────────
+pulsefit:Address
     a owl:Class ;
-    rdfs:label   "Skill" ;
-    rdfs:comment """A packaged set of agent instructions defined by a folder
-containing a SKILL.md file. Skills teach the agent WHEN (trigger condition,
-via the 'description' frontmatter key) and HOW (procedural instructions in
-the Markdown body) to accomplish tasks using tools.
+    rdfs:label   "Address" ;
+    rdfs:comment "联系地址/收件地址" ;
+    rdfs:subClassOf vcard:Address .
 
-Skill SKILL.md frontmatter keys:
-- name (required)         — unique identifier (kebab-case)
-- description (required)  — trigger condition for model activation
-- metadata (optional)     — JSON object with openclaw-specific fields:
-    - requires.bins       — binaries that must be on PATH
-    - requires.env        — environment variables that must be set
-    - requires.config     — openclaw.json config paths that must be truthy
-    - user-invocable      — true|false (default true); exposes as slash command
-    - disable-model-invocation — true|false (default false)
-    - command-dispatch    — "tool" to bypass model and dispatch to a tool
-    - command-tool        — tool name for command-dispatch
-    - os                  — [darwin|linux|win32] platform filter
-    - homepage            — URL shown in macOS Skills UI
-    - emoji               — emoji shown in macOS Skills UI
-
-Skill loading locations (lowest to highest precedence):
-1. skills.load.extraDirs (configured extra folders)
-2. Bundled skills (shipped with npm package / OpenClaw.app)
-3. Managed/local skills: ~/.openclaw/skills
-4. Personal agent skills: ~/.agents/skills
-5. Project agent skills: <workspace>/.agents/skills
-6. Workspace skills: <workspace>/skills  ← highest precedence
-
-Reference: https://docs.openclaw.ai/tools/skills""" .
-
-openclaw:Tool
+pulsefit:ContactInfo
     a owl:Class ;
-    rdfs:label   "Tool" ;
-    rdfs:comment """A low-level callable capability that an Agent invokes in its
-Agent Loop. Tools are the primitive actions the agent takes. They can be
-built-in (shipped with OpenClaw) or provided by Plugins.
+    rdfs:label   "ContactInfo" ;
+    rdfs:comment "联系方式：邮箱、电话、社交账号主页等" ;
+    rdfs:subClassOf vcard:Contact .
 
-Built-in tool groups:
-- group:runtime   — exec, process
-- group:fs        — read, write, edit, apply_patch
-- group:sessions  — sessions_*
-- group:memory    — memory_search, memory_get
-- group:web       — web_search, x_search, web_fetch, browser
-- group:ui        — canvas
-- group:automation — cron, gateway
-- group:messaging — message (agent-send)
-- group:nodes     — nodes
-- group:openclaw  — agents_list, image, image_generate, code_execution
-
-Key built-in tools: exec, code_execution, browser, web_search, x_search,
-web_fetch, read, write, edit, apply_patch, message, canvas, nodes, cron,
-gateway, image, image_generate, sessions_*, agents_list.
-
-Tool availability is controlled by tools.allow, tools.deny, tools.profile,
-and tools.byProvider.
-Reference: https://docs.openclaw.ai/tools""" .
-
-openclaw:Plugin
+# ── 事件 (覆盖全流程所有事件) ──────────────────────────────────────────────
+pulsefit:BusinessEvent
     a owl:Class ;
-    rdfs:label   "Plugin" ;
-    rdfs:comment """A packaged extension that can add new Tools, Skills, and
-Channel integrations to OpenClaw. Plugins are installed via
-openclaw.plugin.json. They may bundle skills (exposed via skills.load.extraDirs)
-and new tool implementations. Examples: Feishu, LINE, Matrix, Mattermost,
-Microsoft Teams, Voice Call, Lobster, LLM Task, OpenProse, Diffs.
-Reference: https://docs.openclaw.ai/tools/plugin""" .
+    rdfs:label   "BusinessEvent" ;
+    rdfs:comment "业务事件：入职、Sourcing、审批、发货、付款、内容发布等所有流程事件" ;
+    rdfs:subClassOf event:Event .
 
-# ── Channels & Sessions ──────────────────────────────────────────────────────
+# 事件类型受控词汇
+pulsefit:EventTypeValue
+    a rdfs:Class ;
+    rdfs:label   "EventTypeValue" ;
+    owl:oneOf   ( "onboarding" "sourcing" "contract_sign" "approval_submit" "approval_pass" "approval_reject" 
+                  "shipment_create" "shipment_send" "shipment_receive" "payment_apply" "payment_pay" 
+                  "content_publish" "sop_update" "feedback" ) .
 
-openclaw:Channel
+# ── 文档 (覆盖所有文档类实体) ───────────────────────────────────────────────
+pulsefit:Document
     a owl:Class ;
-    rdfs:label   "Channel" ;
-    rdfs:comment """A messaging platform integration managed by the Gateway.
-Multiple channels can run simultaneously; OpenClaw routes messages per chat.
-Supported channels include: BlueBubbles, Discord, Feishu, Google Chat,
-iMessage (legacy), IRC, LINE, Matrix, Mattermost, Microsoft Teams,
-Nextcloud Talk, Nostr, QQ Bot, Signal, Slack, Synology Chat, Telegram,
-Tlon, Twitch, Voice Call, WebChat, WeChat, WhatsApp, Zalo, Zalo Personal.
-Each Channel may support multiple accounts (accountId).
-Reference: https://docs.openclaw.ai/channels""" .
+    rdfs:label   "Document" ;
+    rdfs:comment "通用文档实体：SOP、合同模板、审批表模板、合同PDF、发票等" .
 
-openclaw:Session
+pulsefit:SOPDocument
     a owl:Class ;
-    rdfs:label   "Session" ;
-    rdfs:comment """A conversation instance that manages conversation state and
-message history for one Agent. Sessions are keyed by scope:
-- main (default)           — all DMs share one session
-- per-peer                 — isolated by sender (across channels)
-- per-channel-peer         — isolated by channel + sender (recommended)
-- per-account-channel-peer — isolated by account + channel + sender
+    rdfs:label   "SOPDocument" ;
+    rdfs:comment "流程标准操作手册文档" ;
+    rdfs:subClassOf pulsefit:Document .
 
-Session lifecycle:
-- Daily reset: new session at 4:00 AM local time on gateway host
-- Idle reset:  new session after session.reset.idleMinutes of inactivity
-- Manual:      /new or /reset in chat
-
-Storage:
-- Store:     ~/.openclaw/agents/<agentId>/sessions/sessions.json
-- Transcript: ~/.openclaw/agents/<agentId>/sessions/<sessionId>.jsonl
-
-Reference: https://docs.openclaw.ai/concepts/session""" .
-
-openclaw:Binding
+pulsefit:TemplateDocument
     a owl:Class ;
-    rdfs:label   "Binding" ;
-    rdfs:comment """A routing rule that maps inbound messages to a specific Agent.
-Bindings match on (channel, accountId, peer) and optionally guildId/teamId.
-Routing priority (first match wins, most specific first):
-1. peer match (exact DM/group/channel id)
-2. parentPeer match (thread inheritance)
-3. guildId + roles (Discord role routing)
-4. guildId (Discord)
-5. teamId (Slack)
-6. accountId match for a channel
-7. channel-level match (accountId: "*")
-8. fallback to default agent
+    rdfs:label   "TemplateDocument" ;
+    rdfs:comment "模板文档：合同模板、审批表模板等" ;
+    rdfs:subClassOf pulsefit:Document .
 
-Direct chats collapse to session key: agent:<agentId>:<mainKey>.
-Reference: https://docs.openclaw.ai/concepts/multi-agent""" .
-
-# ── Memory ───────────────────────────────────────────────────────────────────
-
-openclaw:Memory
+pulsefit:ContractDocument
     a owl:Class ;
-    rdfs:label   "Memory" ;
-    rdfs:comment """A persistent information unit retained by an Agent across
-conversations. Memory in OpenClaw is stored as plain Markdown files:
+    rdfs:label   "ContractDocument" ;
+    rdfs:comment "正式签署的合同文档" ;
+    rdfs:subClassOf pulsefit:Document .
 
-Long-term memory (MEMORY.md):
-- Durable facts, preferences, and decisions.
-- Loaded at the start of every DM session.
-- Only in main/private sessions (not shared/group contexts).
-
-Daily events (KG event:Event):
-- Stored in Knowledge Graph, queried via kg-memory skill
-- Events sourced from session analysis (kg-memory-sync cron)
-
-Memory backends:
-- Builtin: SQLite-based (default)
-- QMD: advanced local-first sidecar
-- Honcho: AI-native cross-session memory
-
-Memory tools:
-- memory_search — semantic search across memory files
-- memory_get    — reads a specific memory file or line range
-
-CLI: openclaw memory status | search | index
-Reference: https://docs.openclaw.ai/concepts/memory""" .
-
-# ── Generic extension ────────────────────────────────────────────────────────
-
-openclaw:Concept
+pulsefit:InvoiceDocument
     a owl:Class ;
-    rdfs:label   "Concept" ;
-    rdfs:comment """A generic extension node for domain-specific concepts that
-do not fit into the core classes. Subclass it to introduce new typed entity
-types during ontology evolution. Use openclaw:relatedTo for generic
-associations between Concepts.""" .
-
-openclaw:Location
-    a owl:Class ;
-    rdfs:label   "Location" ;
-    rdfs:comment """A physical or logical place relevant to the user's context.
-Locations can be described with coordinates (via geo:lat/geo:long using the WGS84
-vocabulary), addresses (via vcard:address), and relationships to other entities
-such as events or people. Examples: Lab E-4002, 太仓学校, a specific venue.
-Use openclaw:relatedTo to link Locations to other entities (e.g. foaf:Person,
-event:Event).""" ;
-    rdfs:subClassOf owl:Thing .
-
-openclaw:locatedAt
-    a owl:ObjectProperty ;
-    rdfs:label   "locatedAt" ;
-    rdfs:comment "Links an entity (e.g. foaf:Person, event:Event) to a Location where it is situated." ;
-    rdfs:domain  owl:Thing ;
-    rdfs:range   openclaw:Location .
-
-openclaw:hasAddress
-    a owl:ObjectProperty ;
-    rdfs:label   "hasAddress" ;
-    rdfs:comment "Links a Location to a vcard:Address representing its postal or contact address." ;
-    rdfs:domain  openclaw:Location ;
-    rdfs:range   vcard:Address .
-
-openclaw:locationNote
-    a owl:DatatypeProperty ;
-    rdfs:label   "locationNote" ;
-    rdfs:comment "A free-text annotation about this Location, e.g. how to get there, accessibility info." ;
-    rdfs:domain  openclaw:Location ;
-    rdfs:range   xsd:string .
+    rdfs:label   "InvoiceDocument" ;
+    rdfs:comment "发票/账单文档" ;
+    rdfs:subClassOf pulsefit:Document .
 
 ###############################################################################
-# ── GLOBAL ANNOTATION PROPERTIES (rdfs:domain owl:Thing) ─────────────────────
+# ── 第二层：网红营销核心层 (覆盖Act1-3+Act5核心业务) ─────────────────────────
 ###############################################################################
 
-openclaw:hasName
+# ── 产品 ───────────────────────────────────────────────────────────────────
+pulsefit:Product
+    a owl:Class ;
+    rdfs:label   "Product" ;
+    rdfs:comment "产品实体：PulseRope Pro等公司产品" .
+
+# ── 营销活动 ───────────────────────────────────────────────────────────────
+pulsefit:Campaign
+    a owl:Class ;
+    rdfs:label   "Campaign" ;
+    rdfs:comment "营销活动：每个网红合作所属的活动项目" .
+
+# ── 合作合同 ───────────────────────────────────────────────────────────────
+pulsefit:Contract
+    a owl:Class ;
+    rdfs:label   "Contract" ;
+    rdfs:comment "合作合同：网红合作的正式合同信息" .
+
+# ── 交付内容 ───────────────────────────────────────────────────────────────
+pulsefit:ContentDeliverable
+    a owl:Class ;
+    rdfs:label   "ContentDeliverable" ;
+    rdfs:comment "网红交付内容：Reel、Story、Post等" .
+
+###############################################################################
+# ── 第三层：企业流程层 (覆盖Act4-5+全流程审批) ──────────────────────────────
+###############################################################################
+
+# ── 审批流 ─────────────────────────────────────────────────────────────────
+pulsefit:ApprovalFlow
+    a owl:Class ;
+    rdfs:label   "ApprovalFlow" ;
+    rdfs:comment "审批流：合同审批、发货审批、付款审批等所有审批流程" .
+
+pulsefit:ApprovalRecord
+    a owl:Class ;
+    rdfs:label   "ApprovalRecord" ;
+    rdfs:comment "审批记录：每一次审批操作的记录" .
+
+# ── 发货/物流 ──────────────────────────────────────────────────────────────
+pulsefit:ShipmentOrder
+    a owl:Class ;
+    rdfs:label   "ShipmentOrder" ;
+    rdfs:comment "发货申请单" .
+
+pulsefit:LogisticsRecord
+    a owl:Class ;
+    rdfs:label   "LogisticsRecord" ;
+    rdfs:comment "物流记录：发货后的物流信息" .
+
+# ── 付款/财务 ──────────────────────────────────────────────────────────────
+pulsefit:PaymentOrder
+    a owl:Class ;
+    rdfs:label   "PaymentOrder" ;
+    rdfs:comment "付款申请单" .
+
+pulsefit:TaxCert
+    a owl:Class ;
+    rdfs:label   "TaxCert" ;
+    rdfs:comment "税务资质文件：W-9等" .
+
+###############################################################################
+# ── 第四层：规则知识层 (覆盖所有Act的智能决策规则) ───────────────────────────
+###############################################################################
+
+pulsefit:BusinessRule
+    a owl:Class ;
+    rdfs:label   "BusinessRule" ;
+    rdfs:comment "通用业务规则实体" .
+
+pulsefit:SOPRule
+    a owl:Class ;
+    rdfs:label   "SOPRule" ;
+    rdfs:comment "SOP流程规则：从SOP文档中提取的可执行规则" ;
+    rdfs:subClassOf pulsefit:BusinessRule .
+
+pulsefit:DecisionPreference
+    a owl:Class ;
+    rdfs:label   "DecisionPreference" ;
+    rdfs:comment "决策偏好：Mentor/团队的隐性决策规则、偏好" ;
+    rdfs:subClassOf pulsefit:BusinessRule .
+
+pulsefit:MatchingRule
+    a owl:Class ;
+    rdfs:label   "MatchingRule" ;
+    rdfs:comment "匹配规则：博主-产品匹配、报价计算规则等" ;
+    rdfs:subClassOf pulsefit:BusinessRule .
+
+###############################################################################
+# ── 全局通用属性 ───────────────────────────────────────────────────────────
+###############################################################################
+
+pulsefit:hasName
     a owl:DatatypeProperty ;
     rdfs:label   "hasName" ;
-    rdfs:comment "The unique, human-readable name or identifier of this entity." ;
+    rdfs:comment "实体名称" ;
     rdfs:domain  owl:Thing ;
     rdfs:range   xsd:string .
 
-openclaw:hasDescription
+pulsefit:hasDescription
     a owl:DatatypeProperty ;
     rdfs:label   "hasDescription" ;
-    rdfs:comment "A natural-language description of this entity's purpose or behavior." ;
+    rdfs:comment "实体描述" ;
     rdfs:domain  owl:Thing ;
     rdfs:range   xsd:string .
 
-openclaw:version
-    a owl:DatatypeProperty ;
-    rdfs:label   "version" ;
-    rdfs:comment "Semantic version string (e.g. '1.2.0') for this entity." ;
-    rdfs:domain  owl:Thing ;
-    rdfs:range   xsd:string .
-
-openclaw:createdAt
+pulsefit:createdAt
     a owl:DatatypeProperty ;
     rdfs:label   "createdAt" ;
-    rdfs:comment "ISO 8601 datetime at which this entity was first created." ;
+    rdfs:comment "创建时间" ;
     rdfs:domain  owl:Thing ;
     rdfs:range   xsd:dateTime .
 
-openclaw:updatedAt
+pulsefit:updatedAt
     a owl:DatatypeProperty ;
     rdfs:label   "updatedAt" ;
-    rdfs:comment "ISO 8601 datetime at which this entity was last modified." ;
+    rdfs:comment "更新时间" ;
     rdfs:domain  owl:Thing ;
     rdfs:range   xsd:dateTime .
 
-openclaw:docUrl
-    a owl:AnnotationProperty ;
-    rdfs:label   "docUrl" ;
-    rdfs:comment "URL to the official OpenClaw documentation page for this concept." ;
-    rdfs:domain  owl:Thing .
-
-###############################################################################
-# ── GATEWAY PROPERTIES ────────────────────────────────────────────────────────
-###############################################################################
-
-openclaw:bindHost
-    a owl:DatatypeProperty ;
-    rdfs:label   "bindHost" ;
-    rdfs:comment "WebSocket bind address of this Gateway (default: 127.0.0.1:18789)." ;
-    rdfs:domain  openclaw:Gateway ;
-    rdfs:range   xsd:string .
-
-openclaw:managesChannel
-    a owl:ObjectProperty ;
-    rdfs:label   "managesChannel" ;
-    rdfs:comment "A Channel that this Gateway owns and manages." ;
-    rdfs:domain  openclaw:Gateway ;
-    rdfs:range   openclaw:Channel .
-
-openclaw:hostsAgent
-    a owl:ObjectProperty ;
-    rdfs:label   "hostsAgent" ;
-    rdfs:comment "An Agent hosted and orchestrated by this Gateway." ;
-    rdfs:domain  openclaw:Gateway ;
-    rdfs:range   openclaw:Agent .
-
-openclaw:connectedNode
-    a owl:ObjectProperty ;
-    rdfs:label   "connectedNode" ;
-    rdfs:comment "A Node (client device) connected to this Gateway." ;
-    rdfs:domain  openclaw:Gateway ;
-    rdfs:range   openclaw:Node .
-
-###############################################################################
-# ── AGENT PROPERTIES ─────────────────────────────────────────────────────────
-###############################################################################
-
-openclaw:agentId
-    a owl:DatatypeProperty ;
-    rdfs:label   "agentId" ;
-    rdfs:comment """The unique identifier string for this Agent (e.g. 'main',
-'coding', 'social'). Used in session keys, file paths, and bindings.""" ;
-    rdfs:domain  openclaw:Agent ;
-    rdfs:range   xsd:string .
-
-openclaw:hasWorkspace
-    a owl:ObjectProperty ;
-    rdfs:label   "hasWorkspace" ;
-    rdfs:comment "The Workspace filesystem directory used by this Agent." ;
-    rdfs:domain  openclaw:Agent ;
-    rdfs:range   openclaw:Workspace .
-
-openclaw:usesProvider
-    a owl:ObjectProperty ;
-    rdfs:label   "usesProvider" ;
-    rdfs:comment "The LLM Provider configured for this Agent." ;
-    rdfs:domain  openclaw:Agent ;
-    rdfs:range   openclaw:Provider .
-
-openclaw:hasSession
-    a owl:ObjectProperty ;
-    rdfs:label   "hasSession" ;
-    rdfs:comment "A Session associated with this Agent." ;
-    rdfs:domain  openclaw:Agent ;
-    rdfs:range   openclaw:Session .
-
-openclaw:usesTool
-    a owl:ObjectProperty ;
-    rdfs:label   "usesTool" ;
-    rdfs:comment "A Tool that this Agent is capable of invoking." ;
-    rdfs:domain  openclaw:Agent ;
-    rdfs:range   openclaw:Tool .
-
-openclaw:usesSkill
-    a owl:ObjectProperty ;
-    rdfs:label   "usesSkill" ;
-    rdfs:comment "A Skill loaded and available to this Agent." ;
-    rdfs:domain  openclaw:Agent ;
-    rdfs:range   openclaw:Skill .
-
-openclaw:hasMemory
-    a owl:ObjectProperty ;
-    rdfs:label   "hasMemory" ;
-    rdfs:comment "A Memory unit associated with this Agent." ;
-    rdfs:domain  openclaw:Agent ;
-    rdfs:range   openclaw:Memory .
-
-openclaw:isDefaultAgent
-    a owl:DatatypeProperty ;
-    rdfs:label   "isDefaultAgent" ;
-    rdfs:comment "True if this is the fallback agent when no binding matches." ;
-    rdfs:domain  openclaw:Agent ;
-    rdfs:range   xsd:boolean .
-
-###############################################################################
-# ── SKILL PROPERTIES ─────────────────────────────────────────────────────────
-###############################################################################
-
-openclaw:hasTriggerCondition
-    a owl:DatatypeProperty ;
-    rdfs:label   "hasTriggerCondition" ;
-    rdfs:comment """The natural-language condition describing when this Skill
-should be activated by the model. Corresponds to the 'description' field in
-SKILL.md frontmatter.""" ;
-    rdfs:domain  openclaw:Skill ;
-    rdfs:range   xsd:string .
-
-openclaw:hasSkillPath
-    a owl:DatatypeProperty ;
-    rdfs:label   "hasSkillPath" ;
-    rdfs:comment "Filesystem path to the skill's root directory (containing SKILL.md)." ;
-    rdfs:domain  openclaw:Skill ;
-    rdfs:range   xsd:string .
-
-openclaw:skillPrecedence
-    a owl:DatatypeProperty ;
-    rdfs:label   "skillPrecedence" ;
-    rdfs:comment """Loading precedence level of this Skill (1=lowest/extraDirs,
-2=bundled, 3=managed, 4=personal, 5=project, 6=workspace/highest).""" ;
-    rdfs:domain  openclaw:Skill ;
-    rdfs:range   xsd:integer .
-
-openclaw:isUserInvocable
-    a owl:DatatypeProperty ;
-    rdfs:label   "isUserInvocable" ;
-    rdfs:comment """True if this Skill is exposed as a slash command (user-invocable:
-true in frontmatter, default). False if disabled.""" ;
-    rdfs:domain  openclaw:Skill ;
-    rdfs:range   xsd:boolean .
-
-openclaw:disableModelInvocation
-    a owl:DatatypeProperty ;
-    rdfs:label   "disableModelInvocation" ;
-    rdfs:comment """True if this Skill is excluded from the model prompt (only
-available via user slash-command invocation).""" ;
-    rdfs:domain  openclaw:Skill ;
-    rdfs:range   xsd:boolean .
-
-openclaw:targetPlatform
-    a owl:DatatypeProperty ;
-    rdfs:label   "targetPlatform" ;
-    rdfs:comment """OS platform filter for this Skill. One of: darwin, linux,
-win32. If absent, skill is eligible on all platforms.""" ;
-    rdfs:domain  openclaw:Skill ;
-    rdfs:range   xsd:string .
-
-openclaw:dependsOn
-    a owl:ObjectProperty ;
-    rdfs:label   "dependsOn" ;
-    rdfs:comment "Indicates that this Skill requires another Skill to function." ;
-    rdfs:domain  openclaw:Skill ;
-    rdfs:range   openclaw:Skill .
-
-###############################################################################
-# ── TOOL PROPERTIES ──────────────────────────────────────────────────────────
-###############################################################################
-
-openclaw:toolGroup
-    a owl:DatatypeProperty ;
-    rdfs:label   "toolGroup" ;
-    rdfs:comment """The tool group this Tool belongs to (e.g. group:fs, group:web,
-group:runtime, group:memory, group:messaging, group:sessions, group:ui,
-group:automation, group:nodes, group:openclaw).""" ;
-    rdfs:domain  openclaw:Tool ;
-    rdfs:range   xsd:string .
-
-openclaw:isBuiltin
-    a owl:DatatypeProperty ;
-    rdfs:label   "isBuiltin" ;
-    rdfs:comment "True if this Tool is shipped built-in with OpenClaw; false if provided by a Plugin." ;
-    rdfs:domain  openclaw:Tool ;
-    rdfs:range   xsd:boolean .
-
-openclaw:providedByPlugin
-    a owl:ObjectProperty ;
-    rdfs:label   "providedByPlugin" ;
-    rdfs:comment "The Plugin that provides this Tool (if not built-in)." ;
-    rdfs:domain  openclaw:Tool ;
-    rdfs:range   openclaw:Plugin .
-
-###############################################################################
-# ── CHANNEL PROPERTIES ───────────────────────────────────────────────────────
-###############################################################################
-
-openclaw:channelType
-    a owl:DatatypeProperty ;
-    rdfs:label   "channelType" ;
-    rdfs:comment """The messaging platform identifier for this Channel. One of:
-whatsapp, telegram, discord, slack, signal, imessage, irc, line, googlechat,
-mattermost, matrix, nextcloud-talk, bluebubbles, zalo, zalouser, nostr,
-feishu, qqbot, synology-chat, tlon, twitch, webchat, wechat.""" ;
-    rdfs:domain  openclaw:Channel ;
-    rdfs:range   xsd:string .
-
-openclaw:accountId
-    a owl:DatatypeProperty ;
-    rdfs:label   "accountId" ;
-    rdfs:comment """The account instance identifier within this Channel (e.g.
-'default', 'personal', 'biz'). A single channel type can have multiple
-account instances.""" ;
-    rdfs:domain  openclaw:Channel ;
-    rdfs:range   xsd:string .
-
-openclaw:isPlugin
-    a owl:DatatypeProperty ;
-    rdfs:label   "isPlugin" ;
-    rdfs:comment "True if this Channel requires a separately-installed plugin." ;
-    rdfs:domain  openclaw:Channel ;
-    rdfs:range   xsd:boolean .
-
-###############################################################################
-# ── SESSION PROPERTIES ───────────────────────────────────────────────────────
-###############################################################################
-
-openclaw:sessionId
-    a owl:DatatypeProperty ;
-    rdfs:label   "sessionId" ;
-    rdfs:comment "The unique identifier for this Session (used in file paths and routing state)." ;
-    rdfs:domain  openclaw:Session ;
-    rdfs:range   xsd:string .
-
-openclaw:dmScope
-    a owl:DatatypeProperty ;
-    rdfs:label   "dmScope" ;
-    rdfs:comment """DM isolation scope for this Session. One of: main (all DMs
-share one session), per-peer (by sender), per-channel-peer (channel + sender,
-recommended), per-account-channel-peer (account + channel + sender).""" ;
-    rdfs:domain  openclaw:Session ;
-    rdfs:range   xsd:string .
-
-openclaw:sessionTranscriptPath
-    a owl:DatatypeProperty ;
-    rdfs:label   "sessionTranscriptPath" ;
-    rdfs:comment "Filesystem path to the JSONL transcript for this Session." ;
-    rdfs:domain  openclaw:Session ;
-    rdfs:range   xsd:string .
-
-###############################################################################
-# ── BINDING PROPERTIES ───────────────────────────────────────────────────────
-###############################################################################
-
-openclaw:routesToAgent
-    a owl:ObjectProperty ;
-    rdfs:label   "routesToAgent" ;
-    rdfs:comment "The Agent that this Binding routes matching messages to." ;
-    rdfs:domain  openclaw:Binding ;
-    rdfs:range   openclaw:Agent .
-
-openclaw:matchesChannel
-    a owl:ObjectProperty ;
-    rdfs:label   "matchesChannel" ;
-    rdfs:comment "The Channel that triggers this Binding." ;
-    rdfs:domain  openclaw:Binding ;
-    rdfs:range   openclaw:Channel .
-
-openclaw:matchesPeerId
-    a owl:DatatypeProperty ;
-    rdfs:label   "matchesPeerId" ;
-    rdfs:comment "Exact peer identifier (DM/group/channel id) that activates this Binding." ;
-    rdfs:domain  openclaw:Binding ;
-    rdfs:range   xsd:string .
-
-###############################################################################
-# ── MEMORY PROPERTIES ────────────────────────────────────────────────────────
-###############################################################################
-
-openclaw:memoryContent
-    a owl:DatatypeProperty ;
-    rdfs:label   "memoryContent" ;
-    rdfs:comment "The raw Markdown text content of this Memory entry." ;
-    rdfs:domain  openclaw:Memory ;
-    rdfs:range   xsd:string .
-
-openclaw:memoryType
-    a owl:DatatypeProperty ;
-    rdfs:label   "memoryType" ;
-    rdfs:comment """The category of this Memory. Values:
-- longterm   — KG event:Event with openclaw:eventType=system (architecture, decisions)
-- daily       — KG event:Event with openclaw:eventType=daily (daily context)
-- derived     — synthesized/summarized memory (e.g. from compaction)""" ;
-    rdfs:domain  openclaw:Memory ;
-    rdfs:range   xsd:string .
-
-openclaw:memoryFilePath
-    a owl:DatatypeProperty ;
-    rdfs:label   "memoryFilePath" ;
-    rdfs:comment "Filesystem path to the Markdown file storing this Memory." ;
-    rdfs:domain  openclaw:Memory ;
-    rdfs:range   xsd:string .
-
-openclaw:memoryBackend
-    a owl:DatatypeProperty ;
-    rdfs:label   "memoryBackend" ;
-    rdfs:comment "The memory backend used. One of: builtin (SQLite), qmd, honcho." ;
-    rdfs:domain  openclaw:Memory ;
-    rdfs:range   xsd:string .
-
-###############################################################################
-# ── PROVIDER PROPERTIES ──────────────────────────────────────────────────────
-###############################################################################
-
-openclaw:providerName
-    a owl:DatatypeProperty ;
-    rdfs:label   "providerName" ;
-    rdfs:comment """The provider identifier used in model refs (e.g. 'anthropic',
-'openai', 'google', 'ollama', 'openrouter').""" ;
-    rdfs:domain  openclaw:Provider ;
-    rdfs:range   xsd:string .
-
-openclaw:modelRef
-    a owl:DatatypeProperty ;
-    rdfs:label   "modelRef" ;
-    rdfs:comment """Full model reference string in provider/model format
-(e.g. 'anthropic/claude-sonnet-4-6', 'openrouter/moonshotai/kimi-k2').""" ;
-    rdfs:domain  openclaw:Provider ;
-    rdfs:range   xsd:string .
-
-openclaw:isLocalProvider
-    a owl:DatatypeProperty ;
-    rdfs:label   "isLocalProvider" ;
-    rdfs:comment "True if this Provider runs locally (e.g. Ollama); false for cloud APIs." ;
-    rdfs:domain  openclaw:Provider ;
-    rdfs:range   xsd:boolean .
-
-###############################################################################
-# ── CONCEPT PROPERTIES ───────────────────────────────────────────────────────
-###############################################################################
-
-openclaw:relatedTo
+pulsefit:relatedTo
     a owl:ObjectProperty ;
     a owl:SymmetricProperty ;
     rdfs:label   "relatedTo" ;
-    rdfs:comment """A generic symmetric relationship between any two entities
-(widened from Concept-only in v0.3.0 to allow cross-type associations,
-e.g., linking a Memory to a skos:Concept or a foaf:Person to an event:Event).""" ;
+    rdfs:comment "实体间关联关系" ;
     rdfs:domain  owl:Thing ;
     rdfs:range   owl:Thing .
 
 ###############################################################################
-# ── AGENT ↔ PERSON BRIDGE PROPERTIES ─────────────────────────────────────────
-# These properties connect the OpenClaw system layer (Agent, Channel) to
-# world-knowledge entities represented using FOAF and related vocabularies.
+# ── 基础层属性 ─────────────────────────────────────────────────────────────
 ###############################################################################
 
-openclaw:knownAs
+# 人员属性
+pulsefit:hasRole
     a owl:ObjectProperty ;
-    rdfs:label   "knownAs" ;
-    rdfs:comment """Asserts that this Agent knows the referenced foaf:Person.
-Use this to populate the agent's social/contact graph. Each foaf:Person
-node should carry FOAF and vCard properties for name, contact details, etc.
-This is the primary link from the OpenClaw system layer into the People graph."""
-    ;
-    rdfs:domain  openclaw:Agent ;
-    rdfs:range   foaf:Person .
+    rdfs:label   "hasRole" ;
+    rdfs:comment "人员所属角色" ;
+    rdfs:domain  pulsefit:Person ;
+    rdfs:range   pulsefit:Role .
 
-openclaw:sendsMessageTo
+pulsefit:belongsTo
     a owl:ObjectProperty ;
-    rdfs:label   "sendsMessageTo" ;
-    rdfs:comment """Links a Channel to a foaf:Person who communicates through it.
-Enables the agent to resolve a messaging peer (identified by peer id on a
-specific Channel) to a known foaf:Person node in the Knowledge Graph.
-Complement with openclaw:preferredPeer on the foaf:Person side for
-bidirectional lookup.""" ;
-    rdfs:domain  openclaw:Channel ;
-    rdfs:range   foaf:Person .
+    rdfs:label   "belongsTo" ;
+    rdfs:comment "人员/实体所属组织/部门" ;
+    rdfs:domain  owl:Thing ;
+    rdfs:range   pulsefit:Organization .
 
-openclaw:preferredPeer
-    a owl:DatatypeProperty ;
-    rdfs:label   "preferredPeer" ;
-    rdfs:comment """The preferred peer ID string (channel-specific contact
-identifier) for this foaf:Person. Format: \"<channelType>:<peerId>\", e.g.
-\"whatsapp:+8613900000000\" or \"telegram:123456789\". Allows reverse lookup:
-given a peer id arriving on a Channel, resolve to the foaf:Person node.""" ;
-    rdfs:domain  foaf:Person ;
-    rdfs:range   xsd:string .
-
-openclaw:language
-    a owl:DatatypeProperty ;
-    rdfs:label   "language" ;
-    rdfs:comment """A natural language habitually used by this foaf:Person.
-Use BCP 47 tags (e.g. \"zh-Hans\", \"en\", \"ja\"). Multi-valued: state one
-value per language if the person is multilingual.""" ;
-    rdfs:domain  foaf:Person ;
-    rdfs:range   xsd:string .
-
-openclaw:note
-    a owl:DatatypeProperty ;
-    rdfs:label   "note" ;
-    rdfs:comment """A free-text note about this foaf:Person, e.g. relationship
-context, personal preferences, meeting history summary. Intended for
-human-readable annotations that complement structured properties.""" ;
-    rdfs:domain  foaf:Person ;
-    rdfs:range   xsd:string .
-
-openclaw:jobTitle
-    a owl:DatatypeProperty ;
-    rdfs:label   "jobTitle" ;
-    rdfs:comment """The professional title or role label of this foaf:Person
-(e.g. \"Software Engineer\", \"CEO\", \"Research Director\"). Complements
-org:memberOf / org:hasMembership which model the structural relationship;
-this property captures the human-readable job label.""" ;
-    rdfs:domain  foaf:Person ;
-    rdfs:range   xsd:string .
-
-###############################################################################
-# ── EVENT EXTENSION PROPERTIES ───────────────────────────────────────────────
-# The Event Ontology (event:) defines the core event structure. These openclaw:
-# properties add OpenClaw-specific extensions to event:Event instances.
-###############################################################################
-
-openclaw:eventLabel
-    a owl:DatatypeProperty ;
-    rdfs:label   "eventLabel" ;
-    rdfs:comment """A short human-readable name for this event:Event
-(e.g. \"Q1 Planning Meeting\", \"Birthday dinner with Alice\"). Use this instead
-of rdfs:label to keep event instances clearly labelled in the KG.""" ;
-    rdfs:domain  event:Event ;
-    rdfs:range   xsd:string .
-
-openclaw:eventNote
-    a owl:DatatypeProperty ;
-    rdfs:label   "eventNote" ;
-    rdfs:comment """A free-text note about this event:Event, such as outcomes,
-action items, or contextual observations recorded by the agent.""" ;
-    rdfs:domain  event:Event ;
-    rdfs:range   xsd:string .
-
-openclaw:sourceMemory
+pulsefit:hasAddress
     a owl:ObjectProperty ;
-    rdfs:label   "sourceMemory" ;
-    rdfs:comment """Links an event:Event to the openclaw:Memory entry from
-which it was extracted or derived. Provides provenance: which memory log
-led the agent to create or update this event node.""" ;
-    rdfs:domain  event:Event ;
-    rdfs:range   openclaw:Memory .
+    rdfs:label   "hasAddress" ;
+    rdfs:comment "人员/实体拥有的地址" ;
+    rdfs:domain  owl:Thing ;
+    rdfs:range   pulsefit:Address .
 
-openclaw:relatedTopic
+pulsefit:hasContact
     a owl:ObjectProperty ;
-    rdfs:label   "relatedTopic" ;
-    rdfs:comment """Links an event:Event to one or more skos:Concept nodes
-representing the topics or subject areas discussed or relevant during
-the event. Enables topic-based querying across events.""" ;
-    rdfs:domain  event:Event ;
-    rdfs:range   skos:Concept .
+    rdfs:label   "hasContact" ;
+    rdfs:comment "人员拥有的联系方式" ;
+    rdfs:domain  pulsefit:Person ;
+    rdfs:range   pulsefit:ContactInfo .
 
-###############################################################################
-
-###############################################################################
-# ── EVENT DOMAIN PROPERTIES ───────────────────────────────────────────────────
-# Extension properties for event:Event instances in the OpenClaw KG.
-# These complement the event:Event core properties (event:agent, event:time)
-# from the C4DM Event Ontology.
-###############################################################################
-
-openclaw:eventType
+# 事件属性
+pulsefit:eventType
     a owl:DatatypeProperty ;
     rdfs:label   "eventType" ;
-    rdfs:comment """The semantic category of an event:Event. Values are
-constrained to the controlled vocabulary defined by openclaw:EventTypeValue.
-Used by agents to filter events by type (e.g. travel, meeting, task).
-The full list of allowed values is defined by owl:oneOf in
-openclaw:EventTypeValue.""" ;
-    rdfs:domain  event:Event ;
+    rdfs:comment "事件类型" ;
+    rdfs:domain  pulsefit:BusinessEvent ;
     rdfs:range   xsd:string .
 
-openclaw:EventTypeValue
-    a rdfs:Class ;
-    rdfs:label   "EventTypeValue" ;
-    rdfs:comment """Controlled vocabulary for event:Event classification.
-openclaw:eventType values must be one of these literals.""" ;
-    owl:oneOf   ( "travel" "meeting" "social" "task" "system" "daily" ) .
+pulsefit:hasParticipant
+    a owl:ObjectProperty ;
+    rdfs:label   "hasParticipant" ;
+    rdfs:comment "事件参与人" ;
+    rdfs:domain  pulsefit:BusinessEvent ;
+    rdfs:range   pulsefit:Person .
 
-openclaw:eventLocation
+pulsefit:hasEventTime
     a owl:DatatypeProperty ;
-    rdfs:label   "eventLocation" ;
-    rdfs:comment """Free-text location description for an event:Event
-(e.g. "太仓学校", "虹桥机场", "Lab E-4002").
-For formal location entities, use event:agent with a foaf:Person or
-openclaw:Location instead.""" ;
-    rdfs:domain  event:Event ;
-    rdfs:range   xsd:string .
+    rdfs:label   "hasEventTime" ;
+    rdfs:comment "事件发生时间" ;
+    rdfs:domain  pulsefit:BusinessEvent ;
+    rdfs:range   xsd:dateTime .
 
-openclaw:sourceFile
-    a owl:DatatypeProperty ;
-    rdfs:label   "sourceFile" ;
-    rdfs:comment """Path or URL to the source file or session log from which
-this entity or event was extracted. Provides provenance traceability.""" ;
-    rdfs:domain  owl:Thing ;
-    rdfs:range   xsd:string .
-
-# ── MEMORY LINK PROPERTIES ───────────────────────────────────────────────────
-# These properties extend openclaw:Memory to reference world-knowledge entities,
-# enabling the agent to link its memory notes to People, Events, and Topics.
+###############################################################################
+# ── 营销核心层属性 ─────────────────────────────────────────────────────────
 ###############################################################################
 
-openclaw:aboutPerson
-    a owl:ObjectProperty ;
-    rdfs:label   "aboutPerson" ;
-    rdfs:comment """Indicates that this openclaw:Memory entry is primarily
-about the referenced foaf:Person. Enables queries like: \"retrieve all
-memories about Alice\".""" ;
-    rdfs:domain  openclaw:Memory ;
-    rdfs:range   foaf:Person .
-
-openclaw:aboutEvent
-    a owl:ObjectProperty ;
-    rdfs:label   "aboutEvent" ;
-    rdfs:comment """Indicates that this openclaw:Memory entry is primarily
-about the referenced event:Event. Enables queries like: \"what do I know
-about the Q1 planning meeting?\".""" ;
-    rdfs:domain  openclaw:Memory ;
-    rdfs:range   event:Event .
-
-openclaw:aboutTopic
+# 网红属性
+pulsefit:followerCount
     a owl:DatatypeProperty ;
-    rdfs:label   "aboutTopic" ;
-    rdfs:comment """Free-text topic label indicating what a Memory, Concept, or other entity is about.
-Use plain strings (e.g. 'architecture', 'knowledge') for simple topic tagging.
-For formal topic concept references, use skos:Concept instances separately.""" ;
-    rdfs:domain  owl:Thing ;
+    rdfs:label   "followerCount" ;
+    rdfs:comment "粉丝量" ;
+    rdfs:domain  pulsefit:Influencer ;
+    rdfs:range   xsd:integer .
+
+pulsefit:contentType
+    a owl:DatatypeProperty ;
+    rdfs:label   "contentType" ;
+    rdfs:comment "内容类型：跑步、居家训练、健身等" ;
+    rdfs:domain  pulsefit:Influencer ;
     rdfs:range   xsd:string .
+
+pulsefit:averageViews
+    a owl:DatatypeProperty ;
+    rdfs:label   "averageViews" ;
+    rdfs:comment "近30天平均播放量" ;
+    rdfs:domain  pulsefit:Influencer ;
+    rdfs:range   xsd:integer .
+
+pulsefit:engagementRate
+    a owl:DatatypeProperty ;
+    rdfs:label   "engagementRate" ;
+    rdfs:comment "互动率" ;
+    rdfs:domain  pulsefit:Influencer ;
+    rdfs:range   xsd:float .
+
+pulsefit:platform
+    a owl:DatatypeProperty ;
+    rdfs:label   "platform" ;
+    rdfs:comment "平台：Instagram、TikTok、YouTube等" ;
+    rdfs:domain  pulsefit:Influencer ;
+    rdfs:range   xsd:string .
+
+# 产品属性
+pulsefit:productModel
+    a owl:DatatypeProperty ;
+    rdfs:label   "productModel" ;
+    rdfs:comment "产品型号" ;
+    rdfs:domain  pulsefit:Product ;
+    rdfs:range   xsd:string .
+
+pulsefit:productColor
+    a owl:DatatypeProperty ;
+    rdfs:label   "productColor" ;
+    rdfs:comment "产品颜色" ;
+    rdfs:domain  pulsefit:Product ;
+    rdfs:range   xsd:string .
+
+pulsefit:productSize
+    a owl:DatatypeProperty ;
+    rdfs:label   "productSize" ;
+    rdfs:comment "产品尺寸" ;
+    rdfs:domain  pulsefit:Product ;
+    rdfs:range   xsd:string .
+
+pulsefit:applicableScenario
+    a owl:DatatypeProperty ;
+    rdfs:label   "applicableScenario" ;
+    rdfs:comment "适用场景：家用 cardio、HIIT等" ;
+    rdfs:domain  pulsefit:Product ;
+    rdfs:range   xsd:string .
+
+# 活动属性
+pulsefit:campaignBudget
+    a owl:DatatypeProperty ;
+    rdfs:label   "campaignBudget" ;
+    rdfs:comment "活动预算" ;
+    rdfs:domain  pulsefit:Campaign ;
+    rdfs:range   xsd:float .
+
+pulsefit:campaignStartDate
+    a owl:DatatypeProperty ;
+    rdfs:label   "campaignStartDate" ;
+    rdfs:comment "活动开始时间" ;
+    rdfs:domain  pulsefit:Campaign ;
+    rdfs:range   xsd:date .
+
+pulsefit:campaignEndDate
+    a owl:DatatypeProperty ;
+    rdfs:label   "campaignEndDate" ;
+    rdfs:comment "活动结束时间" ;
+    rdfs:domain  pulsefit:Campaign ;
+    rdfs:range   xsd:date .
+
+# 合同属性
+pulsefit:contractAmount
+    a owl:DatatypeProperty ;
+    rdfs:label   "contractAmount" ;
+    rdfs:comment "合同金额（美元）" ;
+    rdfs:domain  pulsefit:Contract ;
+    rdfs:range   xsd:float .
+
+pulsefit:contractSignDate
+    a owl:DatatypeProperty ;
+    rdfs:label   "contractSignDate" ;
+    rdfs:comment "合同签署日期" ;
+    rdfs:domain  pulsefit:Contract ;
+    rdfs:range   xsd:date .
+
+pulsefit:contractExpireDate
+    a owl:DatatypeProperty ;
+    rdfs:label   "contractExpireDate" ;
+    rdfs:comment "合同到期日期" ;
+    rdfs:domain  pulsefit:Contract ;
+    rdfs:range   xsd:date .
+
+pulsefit:contractStatus
+    a owl:DatatypeProperty ;
+    rdfs:label   "contractStatus" ;
+    rdfs:comment "合同状态：draft、signed、expired等" ;
+    rdfs:domain  pulsefit:Contract ;
+    rdfs:range   xsd:string .
+
+# 交付内容属性
+pulsefit:contentType
+    a owl:DatatypeProperty ;
+    rdfs:label   "contentType" ;
+    rdfs:comment "内容类型：Reel、Story、Post等" ;
+    rdfs:domain  pulsefit:ContentDeliverable ;
+    rdfs:range   xsd:string .
+
+pulsefit:publishDate
+    a owl:DatatypeProperty ;
+    rdfs:label   "publishDate" ;
+    rdfs:comment "发布日期" ;
+    rdfs:domain  pulsefit:ContentDeliverable ;
+    rdfs:range   xsd:date .
+
+pulsefit:contentUrl
+    a owl:DatatypeProperty ;
+    rdfs:label   "contentUrl" ;
+    rdfs:comment "内容链接" ;
+    rdfs:domain  pulsefit:ContentDeliverable ;
+    rdfs:range   xsd:string .
+
+pulsefit:contentViews
+    a owl:DatatypeProperty ;
+    rdfs:label   "contentViews" ;
+    rdfs:comment "播放量/浏览量" ;
+    rdfs:domain  pulsefit:ContentDeliverable ;
+    rdfs:range   xsd:integer .
+
+# 核心关系
+pulsefit:hasContractWith
+    a owl:ObjectProperty ;
+    rdfs:label   "hasContractWith" ;
+    rdfs:comment "网红与公司签有合同" ;
+    rdfs:domain  pulsefit:Influencer ;
+    rdfs:range   pulsefit:Contract .
+
+pulsefit:belongsToCampaign
+    a owl:ObjectProperty ;
+    rdfs:label   "belongsToCampaign" ;
+    rdfs:comment "合同/交付内容所属活动" ;
+    rdfs:domain  owl:Thing ;
+    rdfs:range   pulsefit:Campaign .
+
+pulsefit:usesProduct
+    a owl:ObjectProperty ;
+    rdfs:label   "usesProduct" ;
+    rdfs:comment "合同/活动使用的产品" ;
+    rdfs:domain  owl:Thing ;
+    rdfs:range   pulsefit:Product .
+
+pulsefit:hasDeliverable
+    a owl:ObjectProperty ;
+    rdfs:label   "hasDeliverable" ;
+    rdfs:comment "合同约定的交付内容" ;
+    rdfs:domain  pulsefit:Contract ;
+    rdfs:range   pulsefit:ContentDeliverable .
+
+###############################################################################
+# ── 企业流程层属性 ─────────────────────────────────────────────────────────
+###############################################################################
+
+# 审批属性
+pulsefit:approvalStatus
+    a owl:DatatypeProperty ;
+    rdfs:label   "approvalStatus" ;
+    rdfs:comment "审批状态：pending、pass、reject" ;
+    rdfs:domain  pulsefit:ApprovalFlow ;
+    rdfs:range   xsd:string .
+
+pulsefit:approver
+    a owl:ObjectProperty ;
+    rdfs:label   "approver" ;
+    rdfs:comment "审批人" ;
+    rdfs:domain  pulsefit:ApprovalRecord ;
+    rdfs:range   pulsefit:Employee .
+
+pulsefit:approvalComment
+    a owl:DatatypeProperty ;
+    rdfs:label   "approvalComment" ;
+    rdfs:comment "审批意见" ;
+    rdfs:domain  pulsefit:ApprovalRecord ;
+    rdfs:range   xsd:string .
+
+# 发货属性
+pulsefit:shipmentStatus
+    a owl:DatatypeProperty ;
+    rdfs:label   "shipmentStatus" ;
+    rdfs:comment "发货状态：pending、shipped、delivered" ;
+    rdfs:domain  pulsefit:ShipmentOrder ;
+    rdfs:range   xsd:string .
+
+pulsefit:trackingNumber
+    a owl:DatatypeProperty ;
+    rdfs:label   "trackingNumber" ;
+    rdfs:comment "物流单号" ;
+    rdfs:domain  pulsefit:LogisticsRecord ;
+    rdfs:range   xsd:string .
+
+pulsefit:shipDate
+    a owl:DatatypeProperty ;
+    rdfs:label   "shipDate" ;
+    rdfs:comment "发货日期" ;
+    rdfs:domain  pulsefit:ShipmentOrder ;
+    rdfs:range   xsd:date .
+
+# 付款属性
+pulsefit:paymentAmount
+    a owl:DatatypeProperty ;
+    rdfs:label   "paymentAmount" ;
+    rdfs:comment "付款金额" ;
+    rdfs:domain  pulsefit:PaymentOrder ;
+    rdfs:range   xsd:float .
+
+pulsefit:paymentStatus
+    a owl:DatatypeProperty ;
+    rdfs:label   "paymentStatus" ;
+    rdfs:comment "付款状态：pending、paid、failed" ;
+    rdfs:domain  pulsefit:PaymentOrder ;
+    rdfs:range   xsd:string .
+
+pulsefit:invoiceNumber
+    a owl:DatatypeProperty ;
+    rdfs:label   "invoiceNumber" ;
+    rdfs:comment "发票号" ;
+    rdfs:domain  pulsefit:InvoiceDocument ;
+    rdfs:range   xsd:string .
+
+# 流程关系
+pulsefit:hasApproval
+    a owl:ObjectProperty ;
+    rdfs:label   "hasApproval" ;
+    rdfs:comment "合同/发货单/付款单关联的审批流" ;
+    rdfs:domain  owl:Thing ;
+    rdfs:range   pulsefit:ApprovalFlow .
+
+pulsefit:hasShipment
+    a owl:ObjectProperty ;
+    rdfs:label   "hasShipment" ;
+    rdfs:comment "合同关联的发货单" ;
+    rdfs:domain  pulsefit:Contract ;
+    rdfs:range   pulsefit:ShipmentOrder .
+
+pulsefit:hasPayment
+    a owl:ObjectProperty ;
+    rdfs:label   "hasPayment" ;
+    rdfs:comment "合同关联的付款单" ;
+    rdfs:domain  pulsefit:Contract ;
+    rdfs:range   pulsefit:PaymentOrder .
+
+###############################################################################
+# ── 规则知识层属性 ─────────────────────────────────────────────────────────
+###############################################################################
+
+pulsefit:rulePriority
+    a owl:DatatypeProperty ;
+    rdfs:label   "rulePriority" ;
+    rdfs:comment "规则优先级：1最高，数字越小优先级越高" ;
+    rdfs:domain  pulsefit:BusinessRule ;
+    rdfs:range   xsd:integer .
+
+pulsefit:ruleCondition
+    a owl:DatatypeProperty ;
+    rdfs:label   "ruleCondition" ;
+    rdfs:comment "规则触发条件（自然语言描述）" ;
+    rdfs:domain  pulsefit:BusinessRule ;
+    rdfs:range   xsd:string .
+
+pulsefit:ruleAction
+    a owl:DatatypeProperty ;
+    rdfs:label   "ruleAction" ;
+    rdfs:comment "规则执行动作（自然语言描述）" ;
+    rdfs:domain  pulsefit:BusinessRule ;
+    rdfs:range   xsd:string .
+
+pulsefit:appliesTo
+    a owl:ObjectProperty ;
+    rdfs:label   "appliesTo" ;
+    rdfs:comment "规则适用的场景/实体类型" ;
+    rdfs:domain  pulsefit:BusinessRule ;
+    rdfs:range   owl:Class .
+
+pulsefit:createdBy
+    a owl:ObjectProperty ;
+    rdfs:label   "createdBy" ;
+    rdfs:comment "规则创建人（Mentor等）" ;
+    rdfs:domain  pulsefit:DecisionPreference ;
+    rdfs:range   pulsefit:Employee .

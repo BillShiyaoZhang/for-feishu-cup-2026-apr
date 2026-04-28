@@ -1,0 +1,49 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix kg: <urn:openclaw:kg:> .
+@prefix ns1: <urn:openclaw:ontology#pulsefit:> .
+@prefix openclaw: <urn:openclaw:ontology#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<urn:openclaw:graph:concepts> {
+    kg:concept-pulserope-pro a openclaw:Concept ;
+        openclaw:createdAt "2026-04-28T08:43:13+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "智能跳绳产品，适合居家HIIT、 cardio训练场景" ;
+        openclaw:hasName "PulseRope Pro" ;
+        ns1:applicableScenario "家用 cardio, HIIT, 居家训练" ;
+        ns1:availableColors "Black, Sand, Charcoal" ;
+        ns1:availableSizes "One size, M, L" ;
+        ns1:productModel "PulseRope Pro" ;
+        openclaw:updatedAt "2026-04-28T08:43:13+00:00"^^xsd:dateTime .
+}
+
+<urn:openclaw:graph:people> {
+    kg:person-daniel-tobias a foaf:Person ;
+        foaf:name "Daniel Tobias" ;
+        openclaw:createdAt "2026-04-28T08:35:06+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Mentor，负责审批Offer/合同/付款，最终决策" ;
+        ns1:belongsTo "PulseFit Influencer 组" ;
+        ns1:jobTitle "Mentor" ;
+        openclaw:updatedAt "2026-04-28T08:35:06+00:00"^^xsd:dateTime .
+
+    kg:person-jadeclifftrains a foaf:Person ;
+        foaf:name "jadeclifftrains" ;
+        openclaw:createdAt "2026-04-28T08:42:44+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "IG博主，45k粉丝，跑步+居家训练内容方向" ;
+        ns1:averageViews 12000 ;
+        ns1:contentType "跑步,居家训练,HIIT" ;
+        ns1:email "jadeclifftrains@gmail.com" ;
+        ns1:engagementRate 6e-02 ;
+        ns1:followerCount 45000 ;
+        ns1:hasVoice-over "Y" ;
+        ns1:platform "Instagram" ;
+        openclaw:updatedAt "2026-04-28T08:42:44+00:00"^^xsd:dateTime .
+
+    kg:person-sophie-park a foaf:Person ;
+        foaf:name "Sophie Park" ;
+        openclaw:createdAt "2026-04-28T08:34:30+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "实习生，负责Sourcing、Outreach、Negotiation工作" ;
+        ns1:belongsTo "PulseFit Influencer 组" ;
+        ns1:jobTitle "实习生" ;
+        openclaw:updatedAt "2026-04-28T08:34:30+00:00"^^xsd:dateTime .
+}
+

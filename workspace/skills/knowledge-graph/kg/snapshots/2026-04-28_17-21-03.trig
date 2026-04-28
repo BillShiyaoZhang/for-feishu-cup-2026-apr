@@ -1,0 +1,18 @@
+@prefix kg: <urn:openclaw:kg:> .
+@prefix ns1: <urn:openclaw:ontology#pulsefit:> .
+@prefix openclaw: <urn:openclaw:ontology#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<urn:openclaw:graph:concepts> {
+    kg:concept-rule-payment-verification a openclaw:Concept ;
+        openclaw:createdAt "2026-04-28T08:48:41+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Mentor Daniel 2026-04-09在群聊中明确的付款前必须全Y校验规则" ;
+        openclaw:hasName "Daniel 付款前多源校验规则" ;
+        ns1:appliesTo "pulsefit:PaymentOrder" ;
+        ns1:createdBy kg:person-daniel-tobias ;
+        ns1:ruleAction "检查：1.交付物全部上线（Reel/Story数量符合合同）；2.Bio Link已验证；3.Hashtag已验证；4.Paid Usage已设置；5.效果数据已回写数据库；有任何一项N都不能提交审批" ;
+        ns1:ruleCondition "付款申请提交时触发" ;
+        ns1:rulePriority 1 ;
+        openclaw:updatedAt "2026-04-28T08:48:41+00:00"^^xsd:dateTime .
+}
+

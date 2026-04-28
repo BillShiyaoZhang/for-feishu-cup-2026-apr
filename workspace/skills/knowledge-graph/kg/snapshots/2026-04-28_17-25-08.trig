@@ -1,0 +1,72 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix kg: <urn:openclaw:kg:> .
+@prefix ns1: <urn:openclaw:ontology#pulsefit:> .
+@prefix openclaw: <urn:openclaw:ontology#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<urn:openclaw:graph:people> {
+    kg:person-daniel-tobias a foaf:Person ;
+        foaf:name "Daniel Tobias" ;
+        openclaw:createdAt "2026-04-28T09:22:17+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Mentor，负责最终决策，审批Offer/合同/付款/发货" ;
+        ns1:belongsTo "PulseFit Influencer Marketing Team" ;
+        ns1:email "daniel.tobias@pulsefit.com" ;
+        ns1:jobTitle "Senior Influencer Marketing Manager" ;
+        ns1:role "审批人/最终决策人" ;
+        openclaw:updatedAt "2026-04-28T09:22:17+00:00"^^xsd:dateTime .
+
+    kg:person-gabriel-reyes a foaf:Person ;
+        foaf:name "Gabriel Reyes" ;
+        openclaw:createdAt "2026-04-28T09:22:51+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "物流负责人，负责发货、订单跟踪、物流协调" ;
+        ns1:belongsTo "PulseFit Supply Chain Team" ;
+        ns1:email "gabriel.reyes@pulsefit.com" ;
+        ns1:jobTitle "Logistics Specialist" ;
+        ns1:role "物流执行" ;
+        openclaw:updatedAt "2026-04-28T09:22:51+00:00"^^xsd:dateTime .
+
+    kg:person-hannah-brooks a foaf:Person ;
+        foaf:name "Hannah Brooks" ;
+        openclaw:createdAt "2026-04-28T09:23:22+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Senior PM，负责红人选品、报价建议、内容审核" ;
+        ns1:belongsTo "PulseFit Product Team" ;
+        ns1:email "hannah.brooks@pulsefit.com" ;
+        ns1:jobTitle "Senior Product Marketing Manager" ;
+        ns1:role "项目负责人" ;
+        openclaw:updatedAt "2026-04-28T09:23:22+00:00"^^xsd:dateTime .
+
+    kg:person-maya-patel a foaf:Person ;
+        foaf:name "Maya Patel" ;
+        openclaw:createdAt "2026-04-28T09:24:10+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Senior PM，负责Mirror系列产品线" ;
+        ns1:belongsTo "PulseFit Product Team" ;
+        ns1:email "maya.patel@pulsefit.com" ;
+        ns1:jobTitle "Senior Product Manager" ;
+        ns1:role "产品线负责人" ;
+        openclaw:updatedAt "2026-04-28T09:24:10+00:00"^^xsd:dateTime .
+
+    kg:person-sophie-park a foaf:Person ;
+        foaf:name "Sophie Park" ;
+        openclaw:createdAt "2026-04-28T09:21:48+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "实习生，主角，第一周入职，负责Sourcing、Outreach、Negotiation工作" ;
+        ns1:belongsTo "PulseFit Influencer Marketing Team" ;
+        ns1:email "sophie.park@pulsefit.com" ;
+        ns1:jobTitle "Marketing Intern" ;
+        ns1:role "执行" ;
+        openclaw:updatedAt "2026-04-28T09:21:48+00:00"^^xsd:dateTime .
+}
+
+<urn:openclaw:graph:concepts> {
+    kg:concept-product-pulserope-pro a openclaw:Concept ;
+        openclaw:createdAt "2026-04-28T09:24:37+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "智能跳绳产品，内置计数、卡路里计算、APP数据同步功能，适合居家HIIT、 cardio训练场景" ;
+        openclaw:hasName "PulseRope Pro" ;
+        ns1:applicableScenario "家用 cardio, HIIT, 居家训练, 跳绳爱好者" ;
+        ns1:availableColors "Black, Sand, Charcoal" ;
+        ns1:availableSizes "One size, M, L" ;
+        ns1:priceUSD 4.999e+01 ;
+        ns1:productCategory "Fitness Equipment" ;
+        ns1:productModel "PulseRope Pro" ;
+        openclaw:updatedAt "2026-04-28T09:24:37+00:00"^^xsd:dateTime .
+}
+

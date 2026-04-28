@@ -1,0 +1,7 @@
+@prefix kg: <urn:pulsefit:kg#> .
+@prefix pulsefit: <urn:pulsefit:ontology#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix event: <http://purl.org/NET/c4dm/event.owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# 空的KG文件，后续添加实体

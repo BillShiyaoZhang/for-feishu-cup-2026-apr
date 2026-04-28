@@ -1,255 +1,121 @@
 ---
-name: knowledge-graph
+name: pulsefit-knowledge-graph
 description: >
-  Manage and query factual data instances in the OpenClaw Knowledge Graph.
-  Activate when you need to query entities or when the user wants to add/update
-  a new agent, skill, tool, person, location, concept, or event in the system.
+  PulseFit网红营销Knowledge Agent知识图谱管理工具。用于查询、新增、更新、删除KG中的实体和事件数据。
+  触发关键词：知识图谱, KG, 查询实体, 新增实体, 查询事件, 记录事件, 记忆
 ---
 
-# Knowledge Graph (KG) Skill
+# PulseFit 知识图谱管理 Skill
+本Skill管理PulseFit场景的知识图谱实例数据。本体（ontology skill）定义Schema，本Skill维护实际业务数据。
 
-This skill governs the OpenClaw instance Knowledge Graph. While the `ontology` skill defines the system *schema*, this skill maintains the *data*—the actual capabilities, agents, people, locations, concepts, and episodic events in your workspace.
-
-### KG File Structure
-
-| File | Content | Loading |
-|---|---|---|
-| `graph.trig` | Core KG: agents, skills, people, locations, concepts | Always |
-| `graph-events-YYYY-QN.trig` | Event KG: episodic/event memories by quarter | On-demand |
-
-### KG Instances vs. Skill Files
-
-KG data (e.g., `kg:skill-spawn-agent`) is distinct from the real skill on disk
-(`<workspace>/skills/spawn-agent/SKILL.md`). KG instances are *records* of those
-files; they do not replace them.
-
-### ⚠️ Turtle Prefixed Name Constraint
-
-**Local part (after `:`) cannot contain `/`.** Use hyphens instead.
-
-| ✅ Correct | ❌ Wrong |
-|---|---|
-| `kg:skill-agent-registry` | `kg:skill/agent-registry` |
-| `kg:agent-business-manager` | `kg:agent/business-manager` |
-
-## When to Use
-
-- **Resource Discovery**: Find agents, skills, tools, people, or locations matching a description.
-- **Entity Management**: Create, update, or delete agents/skills/people/locations/concepts.
-- **Event Logging**: Record time-lined events (travel, meetings, social, tasks, system events).
-- **Event Query**: Query events by time range, person, or type.
-
-## 1. Querying Entities (Core KG)
-
-```bash
-python3 skills/knowledge-graph/scripts/query_entity.py \
-  --graph skills/knowledge-graph/kg/graph.trig \
-  --query "keyword or feature description"
+## 文件结构
+```
+skills/knowledge-graph/
+├── SKILL.md                     ← 本文件
+├── README.md                    ← 使用指南
+├── kg/
+│   ├── graph.trig               ← 核心KG：静态实体（网红、产品、员工、规则等）
+│   └── graph-events-YYYY-QN.trig ← 事件KG：按季度分区存储业务事件
+└── scripts/
+    ├── query_entity.py          ← 关键词查询实体
+    ├── query_events.py          ← 查询事件（按时间、人员、类型）
+    ├── query_natural.py         ← 自然语言查询
+    ├── manage_entity.py         ← 实体增删改查
+    └── migrate_events.py        ← 事件迁移工具
 ```
 
-## 2. Querying Events (Event KG)
-
+## 核心功能
+### 1. 查询实体
+根据关键词查询KG中的实体：
 ```bash
-# Query events by time range
-python3 skills/knowledge-graph/scripts/query_events.py \
+python skills/knowledge-graph/scripts/query_entity.py \
+  --graph skills/knowledge-graph/kg/graph.trig \
+  --query "jadeclifftrains 博主信息"
+```
+
+### 2. 查询事件
+按条件查询事件：
+```bash
+# 按时间范围查询
+python skills/knowledge-graph/scripts/query_events.py \
   --from 2026-04-01 --to 2026-04-30
 
-# Query events for a specific person
-python3 skills/knowledge-graph/scripts/query_events.py \
-  --person kg:person-bill --from 2026-03-01 --to 2026-04-30
+# 按人员查询
+python skills/knowledge-graph/scripts/query_events.py \
+  --person kg:person-sophie --from 2026-04-01
 
-# Query events by type
-python3 skills/knowledge-graph/scripts/query_events.py \
-  --event-type travel --from 2026-01-01 --to 2026-12-31
-
-# Show agents/participants
-python3 skills/knowledge-graph/scripts/query_events.py \
-  --from 2026-04-01 --to 2026-04-30 --show-agents
+# 按事件类型查询
+python skills/knowledge-graph/scripts/query_events.py \
+  --event-type approval_pass --from 2026-04-01
 ```
 
-## 2b. Natural Language Query — query_natural.py
-
-For natural language questions about Bill, use `query_natural.py`:
-
+### 3. 自然语言查询
+直接用自然语言查询KG：
 ```bash
-~/.openclaw/venvs/kg/bin/python3 \
-  ~/.openclaw/workspace/skills/knowledge-graph/scripts/query_natural.py \
-  "Bill 4月份见过哪些人"
+python skills/knowledge-graph/scripts/query_natural.py \
+  "jadeclifftrains的合同金额是多少？"
 ```
+返回结构化查询结果，包含schema上下文避免幻觉。
 
-**This is the primary interface for Bill's memory queries.** It returns:
-- `schema_context`: ground-truth ontology schema (event types, property names, enum values) — **prevents LLM hallucination**
-- `parsed_params`: structured query parameters
-- `ontology_snippet`: raw ontology excerpt for reference
-
-The agent uses `schema_context` to construct valid KG queries without making up field names or enum values.
-
-## 2c. Legacy Query — query_about.py
-
-For structured questions about Bill ("Bill 的行程" / "Bill 认识谁"), `query_about.py` still works as a rule-based fallback:
-
+### 4. 管理实体
+新增/更新/删除实体：
 ```bash
-~/.openclaw/venvs/kg/bin/python3 \
-  ~/.openclaw/workspace/skills/knowledge-graph/scripts/query_about.py "Bill"
-
-# 行程模式（按时间排序）
-~/.openclaw/venvs/kg/bin/python3 \
-  ~/.openclaw/workspace/skills/knowledge-graph/scripts/query_about.py "Bill 的行程"
-
-# 人物模式（从事件中发现相关人员）
-~/.openclaw/venvs/kg/bin/python3 \
-  ~/.openclaw/workspace/skills/knowledge-graph/scripts/query_about.py "Bill 认识谁"
-```
-
-Supported modes:
-- `all` (default) — entities + events, sorted by relevance score
-- `travel` — only travel events, sorted by time (newest first)
-- `people` — person entities + related people from events
-- `location` — location entities only
-
-**Internal use:** Call via `exec` tool using the KG runtime Python (`~/.openclaw/venvs/kg/bin/python3`). Parse stdout as structured text output.
-
-## 3. Managing Entities
-
-Use `manage_entity.py` to add/update/delete entities. It auto-backs up and runs SHACL validation.
-
-**Example: Add a Person**
-```bash
-python3 skills/knowledge-graph/scripts/manage_entity.py \
+# 新增网红
+python skills/knowledge-graph/scripts/manage_entity.py \
   --graph skills/knowledge-graph/kg/graph.trig \
-  --type person --id alice \
-  --name "Alice" \
-  --prop "foaf:givenName=Alice" \
-  --prop "openclaw:note=Works at Acme Corp"
-```
+  --type influencer --id jadeclifftrains \
+  --name "jadeclifftrains" \
+  --prop "pulsefit:followerCount=45000" \
+  --prop "pulsefit:platform=Instagram" \
+  --prop "pulsefit:contentType=跑步,居家训练"
 
-**Example: Add a Location**
-```bash
-python3 skills/knowledge-graph/scripts/manage_entity.py \
+# 新增发货单
+python skills/knowledge-graph/scripts/manage_entity.py \
   --graph skills/knowledge-graph/kg/graph.trig \
-  --type location --id lab-e4002 \
-  --name "Lab E-4002" \
-  --description "Arduino kit storage lab."
-```
+  --type shipment_order --id shipment-20260428-001 \
+  --name "jadeclifftrains发货单" \
+  --prop "pulsefit:shipmentStatus=pending" \
+  --prop "pulsefit:hasContract=kg:contract-jadeclifftrains-2026"
 
-**Example: Add an Agent**
-```bash
-python3 skills/knowledge-graph/scripts/manage_entity.py \
+# 删除实体
+python skills/knowledge-graph/scripts/manage_entity.py \
   --graph skills/knowledge-graph/kg/graph.trig \
-  --type agent --id my-agent \
-  --name "My Agent" \
-  --description "A test agent." \
-  --prop "openclaw:agentId=my-agent" \
-  --prop "openclaw:isDefaultAgent=false"
+  --type influencer --id jadeclifftrains --delete
 ```
 
-**Delete an Entity**
+### 5. 记录事件
+新增业务事件：
 ```bash
-python3 skills/knowledge-graph/scripts/manage_entity.py \
-  --graph skills/knowledge-graph/kg/graph.trig \
-  --type agent --id my-agent --delete
-```
-
-## 4. Managing Events
-
-Events are stored in partitioned `graph-events-YYYY-QN.trig` files. Determine the correct quarter from the event date, then write to the corresponding file.
-
-**Example: Add an Event**
-```bash
-python3 skills/knowledge-graph/scripts/manage_entity.py \
+python skills/knowledge-graph/scripts/manage_entity.py \
   --graph skills/knowledge-graph/kg/graph-events-2026-Q2.trig \
   --type event \
-  --id movie-night-apr24 \
-  --name "AFCT Dome Immersive Cinema" \
-  --description "AFCT Dome Immersive Cinema screening at XEC Campus G1015." \
-  --event-type social \
-  --event-time "2026-04-24T14:00:00+08:00" \
-  --agent kg:person-bill \
-  --source-file "~/.openclaw/workspace/skills/knowledge-graph/kg/graph-events-2026-Q2.trig"
+  --id event-approval-pass-20260428-001 \
+  --name "jadeclifftrains发货审批通过" \
+  --description "Daniel批准了jadeclifftrains的发货申请" \
+  --event-type approval_pass \
+  --event-time "2026-04-28T10:00:00+08:00" \
+  --agent kg:person-daniel
 ```
 
-### Event Types
-
-| Type | Use for |
-|---|---|
-| `travel` | Trains, flights, transportation |
-| `meeting` | Meetings, discussions, collaborations |
-| `social` | Social activities, events, gatherings |
-| `task` | Tasks, work, coursework |
-| `system` | System events, architecture changes, config updates |
-| `daily` | General daily records |
-
-### Event Fields
-
-| Field | Property | Notes |
+## 实体类型列表
+| 类型 | 对应本体类 | 存储文件 |
 |---|---|---|
-| Name | `openclaw:hasName` | `--name` |
-| Description | `openclaw:hasDescription` | `--description` |
-| Event type | `openclaw:eventType` | `--event-type` |
-| Time | `event:time` | `--event-time` (xsd:dateTime) |
-| Agents | `event:agent` | `--agent` (can repeat) |
-| Location | `openclaw:eventLocation` | `--location` (kg: or free text) |
-| Source file | `openclaw:sourceFile` | `--source-file` (original log) |
+| `person` | `pulsefit:Person` | `graph.trig` |
+| `employee` | `pulsefit:Employee` | `graph.trig` |
+| `influencer` | `pulsefit:Influencer` | `graph.trig` |
+| `product` | `pulsefit:Product` | `graph.trig` |
+| `campaign` | `pulsefit:Campaign` | `graph.trig` |
+| `contract` | `pulsefit:Contract` | `graph.trig` |
+| `content` | `pulsefit:ContentDeliverable` | `graph.trig` |
+| `approval` | `pulsefit:ApprovalFlow` | `graph.trig` |
+| `shipment` | `pulsefit:ShipmentOrder` | `graph.trig` |
+| `payment` | `pulsefit:PaymentOrder` | `graph.trig` |
+| `rule` | `pulsefit:BusinessRule` | `graph.trig` |
+| `event` | `pulsefit:BusinessEvent` | `graph-events-YYYY-QN.trig` |
 
-## Supported Types
-
-| Type | Class | Graph File |
-|---|---|---|
-| `agent` | `openclaw:Agent` | `graph.trig` |
-| `skill` | `openclaw:Skill` | `graph.trig` |
-| `tool` | `openclaw:Tool` | `graph.trig` |
-| `concept` | `openclaw:Concept` | `graph.trig` |
-| `location` | `openclaw:Location` | `graph.trig` |
-| `person` | `foaf:Person` | `graph.trig` |
-| `event` | `event:Event` | `graph-events-YYYY-QN.trig` |
-
-## Property Prefix Reference
-
-| Prefix | Namespace | Use for |
-|--------|-----------|---------|
-| `kg:` | `urn:openclaw:kg:` | References to KG entities |
-| `openclaw:` | `urn:openclaw:ontology#` | OpenClaw properties |
-| `foaf:` | `http://xmlns.com/foaf/0.1/` | FOAF properties (for `person`) |
-| `event:` | `http://purl.org/NET/c4dm/event.owl#` | Event ontology (for `event`) |
-
-## Required Fields (SHACL Constraints)
-
-| Type | Required Fields |
-|---|---|
-| Agent | `openclaw:agentId` (via `--prop`) |
-| Skill | `openclaw:hasTriggerCondition` (via `--prop`) |
-| Event | `openclaw:eventType` + `event:time` |
-
-> `manage_entity.py` sets `RDF.type` and timestamps (`createdAt`/`updatedAt`) automatically.
-
-## ⚠️ Execution Environment — Read Before Calling
-
-**KG scripts require rdflib — use the workspace venv Python, NOT system Python.**
-
-| Script | Runtime Entity | Python Path |
-|---|---|---|
-| `manage_entity.py` | `kg:concept-runtime-kg` | `/home/shiyao/.openclaw/venvs/kg/bin/python3` |
-| `query_events.py` | `kg:concept-runtime-kg` | `/home/shiyao/.openclaw/venvs/kg/bin/python3` |
-| `query_entity.py` | `kg:concept-runtime-kg` | `/home/shiyao/.openclaw/venvs/kg/bin/python3` |
-| `query_about.py` | `kg:concept-runtime-kg` | `/home/shiyao/.openclaw/venvs/kg/bin/python3` |
-| `sync.py` (kg-sync) | `kg:concept-runtime-kg` | `/home/shiyao/.openclaw/venvs/kg/bin/python3` |
-| `graph_calendar.py` | `kg:concept-runtime-calendar` | `/home/shiyao/.openclaw/venvs/calendar/bin/python3` |
-
-**KG Runtime entities (in `graph.trig`):**
-- `kg:concept-runtime-kg` — KG venv (`~/.openclaw/venvs/kg/`, rdflib, pyshacl)
-- `kg:concept-runtime-calendar` — Calendar Python (stdlib, Graph API)
-- `kg:concept-runtime-node` — Node.js v22
-- `kg:concept-runtime-mcp` — MiniMax MCP env (`/tmp/mcp-env/`)
-
-Each skill's `requiresRuntime` property in KG links to its runtime entity.
-
-**Rule: ALL python calls use uv-managed venvs.** Never use system `/usr/bin/python3`. Even stdlib-only scripts must use a uv-managed venv. This keeps all python execution under uv management.
-
-**Calling pattern:**
-```bash
-# ✅ Correct — uv-managed venv python
-/home/shiyao/.openclaw/venvs/kg/bin/python3 ~/.openclaw/workspace/skills/knowledge-graph/scripts/manage_entity.py --graph ...
-
-# ❌ Wrong — system python not managed by uv
-python3 ~/.openclaw/workspace/skills/knowledge-graph/scripts/manage_entity.py --graph ...
-```
+## 约束规则
+1. 所有新增实体必须使用本体中已定义的类和属性
+2. 事件按季度存储到对应的graph-events文件中
+3. 实体ID使用kebab-case，格式：`[类型缩写]-[名称/日期]-[序号]`
+4. 实体ID中禁止使用`/`，使用`-`代替
+5. 所有操作自动备份，操作前自动运行SHACL校验

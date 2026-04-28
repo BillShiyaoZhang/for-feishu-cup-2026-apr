@@ -1,0 +1,115 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix kg: <urn:openclaw:kg:> .
+@prefix ns1: <urn:openclaw:ontology#pulsefit:> .
+@prefix openclaw: <urn:openclaw:ontology#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<urn:openclaw:graph:concepts> {
+    kg:concept-payment-jadeclifftrains-2026 a openclaw:Concept ;
+        openclaw:createdAt "2026-04-28T08:45:03+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "jadeclifftrains 合作款付款申请单" ;
+        openclaw:hasName "jadeclifftrains 付款申请单" ;
+        ns1:applicant kg:person-sophie-park ;
+        ns1:approver kg:person-daniel-tobias ;
+        ns1:hasContract kg:concept-contract-jadeclifftrains-2026 ;
+        ns1:invoiceNumber "INV-2026-0428-001" ;
+        ns1:paymentAmount 4e+02 ;
+        ns1:paymentDueDate "2026-06-01^^xsd:date" ;
+        ns1:paymentStatus "pending" ;
+        openclaw:updatedAt "2026-04-28T08:45:03+00:00"^^xsd:dateTime .
+
+    kg:concept-rule-mentor-shipment-check a openclaw:Concept ;
+        openclaw:createdAt "2026-04-28T08:44:30+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Mentor Daniel 2026-03-15在群聊中明确的发货前必须检查的四项规则" ;
+        openclaw:hasName "Daniel 发货前四件自查规则" ;
+        ns1:appliesTo "pulsefit:ShipmentOrder" ;
+        ns1:createdBy kg:person-daniel-tobias ;
+        ns1:ruleAction "检查：1.地址完整（street + city + state + ZIP 四件套）；2.产品型号、颜色、尺码和合同一致；3.Promised Delivery Date 已填；4.POC 和 Manage by 已填对人；全部符合才允许提交审批" ;
+        ns1:ruleCondition "发货申请提交时触发" ;
+        ns1:rulePriority 1 ;
+        openclaw:updatedAt "2026-04-28T08:44:30+00:00"^^xsd:dateTime .
+
+    kg:concept-rule-payment-verification a openclaw:Concept ;
+        openclaw:createdAt "2026-04-28T08:48:41+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Mentor Daniel 2026-04-09在群聊中明确的付款前必须全Y校验规则" ;
+        openclaw:hasName "Daniel 付款前多源校验规则" ;
+        ns1:appliesTo "pulsefit:PaymentOrder" ;
+        ns1:createdBy kg:person-daniel-tobias ;
+        ns1:ruleAction "检查：1.交付物全部上线（Reel/Story数量符合合同）；2.Bio Link已验证；3.Hashtag已验证；4.Paid Usage已设置；5.效果数据已回写数据库；有任何一项N都不能提交审批" ;
+        ns1:ruleCondition "付款申请提交时触发" ;
+        ns1:rulePriority 1 ;
+        openclaw:updatedAt "2026-04-28T08:48:41+00:00"^^xsd:dateTime .
+
+    kg:concept-shipment-jadeclifftrains-2026 a openclaw:Concept ;
+        openclaw:createdAt "2026-04-28T08:44:13+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "jadeclifftrains PulseRope Pro发货申请单" ;
+        openclaw:hasName "jadeclifftrains 发货申请单" ;
+        ns1:applicant kg:person-sophie-park ;
+        ns1:approver kg:person-daniel-tobias ;
+        ns1:hasContract kg:concept-contract-jadeclifftrains-2026 ;
+        ns1:phoneNumber "+1 (213) 555-1234" ;
+        ns1:productColor "Black" ;
+        ns1:productSize "One size" ;
+        ns1:promisedDeliveryDate "2026-05-11^^xsd:date" ;
+        ns1:shipmentStatus "pending" ;
+        ns1:shippingAddress "123 Fitness Ave, Los Angeles, CA 90001" ;
+        ns1:usesProduct kg:concept-pulserope-pro ;
+        openclaw:updatedAt "2026-04-28T08:44:13+00:00"^^xsd:dateTime .
+
+    kg:concept-contract-jadeclifftrains-2026 a openclaw:Concept ;
+        openclaw:createdAt "2026-04-28T08:43:43+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "jadeclifftrains 2026年第二季度PulseRope Pro合作合同" ;
+        openclaw:hasName "jadeclifftrains 2026Q2合作合同" ;
+        ns1:POC kg:person-sophie-park ;
+        ns1:approver kg:person-daniel-tobias ;
+        ns1:contractAmount 4e+02 ;
+        ns1:contractSignDate "2026-04-27^^xsd:date" ;
+        ns1:contractStatus "signed" ;
+        ns1:deliverables "1 Reel + 1 Story Set" ;
+        ns1:hasContractWith kg:person-jadeclifftrains ;
+        ns1:promisedLiveDate "2026-05-25^^xsd:date" ;
+        ns1:usesProduct kg:concept-pulserope-pro ;
+        openclaw:updatedAt "2026-04-28T08:43:43+00:00"^^xsd:dateTime .
+
+    kg:concept-pulserope-pro a openclaw:Concept ;
+        openclaw:createdAt "2026-04-28T08:43:13+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "智能跳绳产品，适合居家HIIT、 cardio训练场景" ;
+        openclaw:hasName "PulseRope Pro" ;
+        ns1:applicableScenario "家用 cardio, HIIT, 居家训练" ;
+        ns1:availableColors "Black, Sand, Charcoal" ;
+        ns1:availableSizes "One size, M, L" ;
+        ns1:productModel "PulseRope Pro" ;
+        openclaw:updatedAt "2026-04-28T08:43:13+00:00"^^xsd:dateTime .
+}
+
+<urn:openclaw:graph:people> {
+    kg:person-gabriel-reyes a foaf:Person ;
+        foaf:name "Gabriel Reyes" ;
+        openclaw:createdAt "2026-04-28T08:48:55+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "物流负责人，负责发货、订单跟踪" ;
+        ns1:belongsTo "PulseFit 供应链组" ;
+        ns1:jobTitle "物流专员" ;
+        openclaw:updatedAt "2026-04-28T08:48:55+00:00"^^xsd:dateTime .
+
+    kg:person-jadeclifftrains a foaf:Person ;
+        foaf:name "jadeclifftrains" ;
+        openclaw:createdAt "2026-04-28T08:42:44+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "IG博主，45k粉丝，跑步+居家训练内容方向" ;
+        ns1:averageViews 12000 ;
+        ns1:contentType "跑步,居家训练,HIIT" ;
+        ns1:email "jadeclifftrains@gmail.com" ;
+        ns1:engagementRate 6e-02 ;
+        ns1:followerCount 45000 ;
+        ns1:hasVoice-over "Y" ;
+        ns1:platform "Instagram" ;
+        openclaw:updatedAt "2026-04-28T08:42:44+00:00"^^xsd:dateTime .
+
+    kg:person-daniel-tobias a foaf:Person ;
+        foaf:name "Daniel Tobias" ;
+        openclaw:createdAt "2026-04-28T08:35:06+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Mentor，负责审批Offer/合同/付款，最终决策" ;
+        ns1:belongsTo "PulseFit Influencer 组" ;
+        ns1:jobTitle "Mentor" ;
+        openclaw:updatedAt "2026-04-28T08:35:06+00:00"^^xsd:dateTime .
+}
+

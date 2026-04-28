@@ -1,0 +1,16 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix kg1: <urn:openclaw:kg:> .
+@prefix ns1: <urn:openclaw:ontology#pulsefit:> .
+@prefix openclaw: <urn:openclaw:ontology#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<urn:openclaw:graph:people> {
+    kg1:person-sophie-park a foaf:Person ;
+        foaf:name "Sophie Park" ;
+        openclaw:createdAt "2026-04-28T08:34:30+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "实习生，负责Sourcing、Outreach、Negotiation工作" ;
+        ns1:belongsTo "PulseFit Influencer 组" ;
+        ns1:jobTitle "实习生" ;
+        openclaw:updatedAt "2026-04-28T08:34:30+00:00"^^xsd:dateTime .
+}
+

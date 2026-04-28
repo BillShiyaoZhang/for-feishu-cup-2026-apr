@@ -1,0 +1,148 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix kg: <urn:openclaw:kg:> .
+@prefix ns1: <urn:openclaw:ontology#pulsefit:> .
+@prefix openclaw: <urn:openclaw:ontology#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<urn:openclaw:graph:concepts> {
+    kg:concept-doc-campaign-retros a openclaw:Concept ;
+        openclaw:createdAt "2026-04-28T09:27:59+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "过去12个月4个营销活动的复盘报告，包含效果数据、经验教训、产品线匹配规则" ;
+        openclaw:hasName "2025-2026营销活动复盘汇总" ;
+        ns1:docType "Retrospective" ;
+        ns1:lastUpdated "2026-03-15^^xsd:date" ;
+        ns1:owner kg:person-hannah-brooks ;
+        openclaw:updatedAt "2026-04-28T09:27:59+00:00"^^xsd:dateTime .
+
+    kg:concept-doc-mentor-chat-history a openclaw:Concept ;
+        openclaw:createdAt "2026-04-28T09:27:38+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "从近60天群聊中提取的Daniel的工作偏好、决策规则、隐性要求汇总" ;
+        openclaw:hasName "Daniel 工作偏好聊天历史汇总" ;
+        ns1:docType "Internal Reference" ;
+        ns1:lastUpdated "2026-04-01^^xsd:date" ;
+        ns1:owner kg:person-daniel-tobias ;
+        openclaw:updatedAt "2026-04-28T09:27:38+00:00"^^xsd:dateTime .
+
+    kg:concept-doc-sop-influencer-partnership a openclaw:Concept ;
+        openclaw:createdAt "2026-04-28T09:27:07+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "网红合作全流程标准操作手册，包含7步流程、三次审批节点、各环节规范要求" ;
+        openclaw:hasName "PulseFit 网红合作SOP文档" ;
+        ns1:docType "SOP" ;
+        ns1:docUrl "https://jcneyh7qlo8i.feishu.cn/docx/xxx1" ;
+        ns1:lastUpdated "2026-03-01^^xsd:date" ;
+        ns1:owner kg:person-daniel-tobias ;
+        openclaw:updatedAt "2026-04-28T09:27:07+00:00"^^xsd:dateTime .
+
+    kg:concept-product-mirror-one-plus a openclaw:Concept ;
+        openclaw:createdAt "2026-04-28T09:26:21+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "智能健身镜，内置AI动作识别、实时纠正、上千节课程、多人在线对抗功能，适合家庭全场景健身" ;
+        openclaw:hasName "Mirror One Plus" ;
+        ns1:applicableScenario "家庭全场景健身, 瑜伽, 有氧操, 力量训练, 亲子运动" ;
+        ns1:availableColors "Black, White" ;
+        ns1:priceUSD 1.49999e+03 ;
+        ns1:productCategory "Smart Fitness Station" ;
+        ns1:productModel "Mirror One Plus" ;
+        ns1:screenSize "43 inch 4K" ;
+        openclaw:updatedAt "2026-04-28T09:26:21+00:00"^^xsd:dateTime .
+
+    kg:concept-product-pulseband-flex a openclaw:Concept ;
+        openclaw:createdAt "2026-04-28T09:25:08+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "智能运动手环，支持心率监测、睡眠跟踪、运动记录、消息提醒功能，适合日常佩戴、多场景运动监测" ;
+        openclaw:hasName "PulseBand Flex" ;
+        ns1:applicableScenario "日常佩戴, 跑步, 健身, 睡眠监测" ;
+        ns1:availableColors "Black, White, Mint, Pink" ;
+        ns1:availableSizes "S, M, L" ;
+        ns1:priceUSD 8.999e+01 ;
+        ns1:productCategory "Wearable Device" ;
+        ns1:productModel "PulseBand Flex" ;
+        openclaw:updatedAt "2026-04-28T09:25:08+00:00"^^xsd:dateTime .
+
+    kg:concept-product-pulsedumbbell-a2 a openclaw:Concept ;
+        openclaw:createdAt "2026-04-28T09:25:55+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "智能可调节哑铃，支持重量一键调节、动作识别、计数、卡路里计算，适配APP课程，适合家庭力量训练" ;
+        openclaw:hasName "PulseDumbbell A2" ;
+        ns1:adjustableWeightRange "2-20kg" ;
+        ns1:applicableScenario "家庭力量训练, 哑铃课程, 肌力训练" ;
+        ns1:availableColors "Black, Gray" ;
+        ns1:priceUSD 2.9999e+02 ;
+        ns1:productCategory "Strength Equipment" ;
+        ns1:productModel "PulseDumbbell A2" ;
+        openclaw:updatedAt "2026-04-28T09:25:55+00:00"^^xsd:dateTime .
+
+    kg:concept-product-pulserope-pro a openclaw:Concept ;
+        openclaw:createdAt "2026-04-28T09:24:37+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "智能跳绳产品，内置计数、卡路里计算、APP数据同步功能，适合居家HIIT、 cardio训练场景" ;
+        openclaw:hasName "PulseRope Pro" ;
+        ns1:applicableScenario "家用 cardio, HIIT, 居家训练, 跳绳爱好者" ;
+        ns1:availableColors "Black, Sand, Charcoal" ;
+        ns1:availableSizes "One size, M, L" ;
+        ns1:priceUSD 4.999e+01 ;
+        ns1:productCategory "Fitness Equipment" ;
+        ns1:productModel "PulseRope Pro" ;
+        openclaw:updatedAt "2026-04-28T09:24:37+00:00"^^xsd:dateTime .
+
+    kg:concept-rule-shipment-check a openclaw:Concept ;
+        openclaw:createdAt "2026-04-28T09:28:53+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Daniel 2026-03-15在群聊中明确的发货前必须检查的四项规则，不符合不能提交审批" ;
+        openclaw:hasName "Daniel 发货前四件自查规则" ;
+        ns1:appliesTo "Shipment Order" ;
+        ns1:createdAt "2026-03-15^^xsd:date" ;
+        ns1:createdBy kg:person-daniel-tobias ;
+        ns1:ruleAction "检查：1.地址完整（street + city + state + ZIP 四件套）；2.产品型号、颜色、尺码和合同一致；3.Promised Delivery Date 已填；4.POC 和 Manage by 已填对人；全部符合才允许提交审批" ;
+        ns1:ruleCondition "发货申请提交时自动触发" ;
+        ns1:rulePriority 1 ;
+        openclaw:updatedAt "2026-04-28T09:28:53+00:00"^^xsd:dateTime .
+}
+
+<urn:openclaw:graph:people> {
+    kg:person-gabriel-reyes a foaf:Person ;
+        foaf:name "Gabriel Reyes" ;
+        openclaw:createdAt "2026-04-28T09:22:51+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "物流负责人，负责发货、订单跟踪、物流协调" ;
+        ns1:belongsTo "PulseFit Supply Chain Team" ;
+        ns1:email "gabriel.reyes@pulsefit.com" ;
+        ns1:jobTitle "Logistics Specialist" ;
+        ns1:role "物流执行" ;
+        openclaw:updatedAt "2026-04-28T09:22:51+00:00"^^xsd:dateTime .
+
+    kg:person-maya-patel a foaf:Person ;
+        foaf:name "Maya Patel" ;
+        openclaw:createdAt "2026-04-28T09:24:10+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Senior PM，负责Mirror系列产品线" ;
+        ns1:belongsTo "PulseFit Product Team" ;
+        ns1:email "maya.patel@pulsefit.com" ;
+        ns1:jobTitle "Senior Product Manager" ;
+        ns1:role "产品线负责人" ;
+        openclaw:updatedAt "2026-04-28T09:24:10+00:00"^^xsd:dateTime .
+
+    kg:person-sophie-park a foaf:Person ;
+        foaf:name "Sophie Park" ;
+        openclaw:createdAt "2026-04-28T09:21:48+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "实习生，主角，第一周入职，负责Sourcing、Outreach、Negotiation工作" ;
+        ns1:belongsTo "PulseFit Influencer Marketing Team" ;
+        ns1:email "sophie.park@pulsefit.com" ;
+        ns1:jobTitle "Marketing Intern" ;
+        ns1:role "执行" ;
+        openclaw:updatedAt "2026-04-28T09:21:48+00:00"^^xsd:dateTime .
+
+    kg:person-hannah-brooks a foaf:Person ;
+        foaf:name "Hannah Brooks" ;
+        openclaw:createdAt "2026-04-28T09:23:22+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Senior PM，负责红人选品、报价建议、内容审核" ;
+        ns1:belongsTo "PulseFit Product Team" ;
+        ns1:email "hannah.brooks@pulsefit.com" ;
+        ns1:jobTitle "Senior Product Marketing Manager" ;
+        ns1:role "项目负责人" ;
+        openclaw:updatedAt "2026-04-28T09:23:22+00:00"^^xsd:dateTime .
+
+    kg:person-daniel-tobias a foaf:Person ;
+        foaf:name "Daniel Tobias" ;
+        openclaw:createdAt "2026-04-28T09:22:17+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Mentor，负责最终决策，审批Offer/合同/付款/发货" ;
+        ns1:belongsTo "PulseFit Influencer Marketing Team" ;
+        ns1:email "daniel.tobias@pulsefit.com" ;
+        ns1:jobTitle "Senior Influencer Marketing Manager" ;
+        ns1:role "审批人/最终决策人" ;
+        openclaw:updatedAt "2026-04-28T09:22:17+00:00"^^xsd:dateTime .
+}
+

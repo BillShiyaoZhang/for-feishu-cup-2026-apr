@@ -4,73 +4,6 @@
 @prefix openclaw: <urn:openclaw:ontology#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<urn:openclaw:graph:people> {
-    kg:person-daniel-tobias a foaf:Person ;
-        foaf:name "Daniel Tobias" ;
-        openclaw:createdAt "2026-04-28T09:22:17+00:00"^^xsd:dateTime ;
-        openclaw:hasDescription "Mentor，负责最终决策，审批Offer/合同/付款/发货" ;
-        ns1:belongsTo "PulseFit Influencer Marketing Team" ;
-        ns1:email "daniel.tobias@pulsefit.com" ;
-        ns1:jobTitle "Senior Influencer Marketing Manager" ;
-        ns1:role "审批人/最终决策人" ;
-        openclaw:updatedAt "2026-04-28T09:22:17+00:00"^^xsd:dateTime .
-
-    kg:person-gabriel-reyes a foaf:Person ;
-        foaf:name "Gabriel Reyes" ;
-        openclaw:createdAt "2026-04-28T09:22:51+00:00"^^xsd:dateTime ;
-        openclaw:hasDescription "物流负责人，负责发货、订单跟踪、物流协调" ;
-        ns1:belongsTo "PulseFit Supply Chain Team" ;
-        ns1:email "gabriel.reyes@pulsefit.com" ;
-        ns1:jobTitle "Logistics Specialist" ;
-        ns1:role "物流执行" ;
-        openclaw:updatedAt "2026-04-28T09:22:51+00:00"^^xsd:dateTime .
-
-    kg:person-hannah-brooks a foaf:Person ;
-        foaf:name "Hannah Brooks" ;
-        openclaw:createdAt "2026-04-28T09:23:22+00:00"^^xsd:dateTime ;
-        openclaw:hasDescription "Senior PM，负责红人选品、报价建议、内容审核" ;
-        ns1:belongsTo "PulseFit Product Team" ;
-        ns1:email "hannah.brooks@pulsefit.com" ;
-        ns1:jobTitle "Senior Product Marketing Manager" ;
-        ns1:role "项目负责人" ;
-        openclaw:updatedAt "2026-04-28T09:23:22+00:00"^^xsd:dateTime .
-
-    kg:person-influencer-jadeclifftrains a foaf:Person ;
-        foaf:name "jadeclifftrains" ;
-        openclaw:createdAt "2026-04-28T09:31:03+00:00"^^xsd:dateTime ;
-        openclaw:hasDescription "Instagram博主，45k粉丝，内容方向：跑步、居家训练、HIIT，有voice-over，内容匹配PulseRope Pro产品" ;
-        ns1:averageViews 12000 ;
-        ns1:contentType "跑步,居家训练,HIIT" ;
-        ns1:email "jadeclifftrains@gmail.com" ;
-        ns1:engagementRate 6e-02 ;
-        ns1:followerCount 45000 ;
-        ns1:hasVoiceOver true ;
-        ns1:phoneNumber "+1 (213) 555-1234" ;
-        ns1:platform "Instagram" ;
-        ns1:shippingAddress "123 Fitness Ave, Los Angeles, CA 90001" ;
-        openclaw:updatedAt "2026-04-28T09:31:03+00:00"^^xsd:dateTime .
-
-    kg:person-maya-patel a foaf:Person ;
-        foaf:name "Maya Patel" ;
-        openclaw:createdAt "2026-04-28T09:24:10+00:00"^^xsd:dateTime ;
-        openclaw:hasDescription "Senior PM，负责Mirror系列产品线" ;
-        ns1:belongsTo "PulseFit Product Team" ;
-        ns1:email "maya.patel@pulsefit.com" ;
-        ns1:jobTitle "Senior Product Manager" ;
-        ns1:role "产品线负责人" ;
-        openclaw:updatedAt "2026-04-28T09:24:10+00:00"^^xsd:dateTime .
-
-    kg:person-sophie-park a foaf:Person ;
-        foaf:name "Sophie Park" ;
-        openclaw:createdAt "2026-04-28T09:21:48+00:00"^^xsd:dateTime ;
-        openclaw:hasDescription "实习生，主角，第一周入职，负责Sourcing、Outreach、Negotiation工作" ;
-        ns1:belongsTo "PulseFit Influencer Marketing Team" ;
-        ns1:email "sophie.park@pulsefit.com" ;
-        ns1:jobTitle "Marketing Intern" ;
-        ns1:role "执行" ;
-        openclaw:updatedAt "2026-04-28T09:21:48+00:00"^^xsd:dateTime .
-}
-
 <urn:openclaw:graph:concepts> {
     kg:concept-doc-campaign-retros a openclaw:Concept ;
         openclaw:createdAt "2026-04-28T09:27:59+00:00"^^xsd:dateTime ;
@@ -160,18 +93,6 @@
         ns1:rulePriority 2 ;
         openclaw:updatedAt "2026-04-28T09:30:01+00:00"^^xsd:dateTime .
 
-    kg:concept-rule-offer-calculation a openclaw:Concept ;
-        openclaw:createdAt "2026-04-28T09:30:36+00:00"^^xsd:dateTime ;
-        openclaw:hasDescription "SOP中定义的报价计算公式：预估报价=近30天平均播放量 × CPM / 1000，CPM默认35美元，根据博主层级调整" ;
-        openclaw:hasName "网红合作报价计算公式" ;
-        ns1:appliesTo "Offer Calculation" ;
-        ns1:createdAt "2026-02-15^^xsd:date" ;
-        ns1:createdBy kg:person-daniel-tobias ;
-        ns1:ruleAction "计算公式：预估报价 = (平均播放量 × CPM) / 1000；CPM参考：Nano(3-10k粉)=0-35，Micro(10-50k粉)=0-40，Mid(50-100k粉)=5-40" ;
-        ns1:ruleCondition "Sourcing阶段给出报价建议时触发" ;
-        ns1:rulePriority 2 ;
-        openclaw:updatedAt "2026-04-28T09:30:36+00:00"^^xsd:dateTime .
-
     kg:concept-rule-payment-verification a openclaw:Concept ;
         openclaw:createdAt "2026-04-28T09:29:24+00:00"^^xsd:dateTime ;
         openclaw:hasDescription "Daniel 2026-04-09在群聊中明确的付款前必须全Y校验规则，有任何一项N都不能提交审批" ;
@@ -195,5 +116,57 @@
         ns1:ruleCondition "发货申请提交时自动触发" ;
         ns1:rulePriority 1 ;
         openclaw:updatedAt "2026-04-28T09:28:53+00:00"^^xsd:dateTime .
+}
+
+<urn:openclaw:graph:people> {
+    kg:person-gabriel-reyes a foaf:Person ;
+        foaf:name "Gabriel Reyes" ;
+        openclaw:createdAt "2026-04-28T09:22:51+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "物流负责人，负责发货、订单跟踪、物流协调" ;
+        ns1:belongsTo "PulseFit Supply Chain Team" ;
+        ns1:email "gabriel.reyes@pulsefit.com" ;
+        ns1:jobTitle "Logistics Specialist" ;
+        ns1:role "物流执行" ;
+        openclaw:updatedAt "2026-04-28T09:22:51+00:00"^^xsd:dateTime .
+
+    kg:person-maya-patel a foaf:Person ;
+        foaf:name "Maya Patel" ;
+        openclaw:createdAt "2026-04-28T09:24:10+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Senior PM，负责Mirror系列产品线" ;
+        ns1:belongsTo "PulseFit Product Team" ;
+        ns1:email "maya.patel@pulsefit.com" ;
+        ns1:jobTitle "Senior Product Manager" ;
+        ns1:role "产品线负责人" ;
+        openclaw:updatedAt "2026-04-28T09:24:10+00:00"^^xsd:dateTime .
+
+    kg:person-sophie-park a foaf:Person ;
+        foaf:name "Sophie Park" ;
+        openclaw:createdAt "2026-04-28T09:21:48+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "实习生，主角，第一周入职，负责Sourcing、Outreach、Negotiation工作" ;
+        ns1:belongsTo "PulseFit Influencer Marketing Team" ;
+        ns1:email "sophie.park@pulsefit.com" ;
+        ns1:jobTitle "Marketing Intern" ;
+        ns1:role "执行" ;
+        openclaw:updatedAt "2026-04-28T09:21:48+00:00"^^xsd:dateTime .
+
+    kg:person-hannah-brooks a foaf:Person ;
+        foaf:name "Hannah Brooks" ;
+        openclaw:createdAt "2026-04-28T09:23:22+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Senior PM，负责红人选品、报价建议、内容审核" ;
+        ns1:belongsTo "PulseFit Product Team" ;
+        ns1:email "hannah.brooks@pulsefit.com" ;
+        ns1:jobTitle "Senior Product Marketing Manager" ;
+        ns1:role "项目负责人" ;
+        openclaw:updatedAt "2026-04-28T09:23:22+00:00"^^xsd:dateTime .
+
+    kg:person-daniel-tobias a foaf:Person ;
+        foaf:name "Daniel Tobias" ;
+        openclaw:createdAt "2026-04-28T09:22:17+00:00"^^xsd:dateTime ;
+        openclaw:hasDescription "Mentor，负责最终决策，审批Offer/合同/付款/发货" ;
+        ns1:belongsTo "PulseFit Influencer Marketing Team" ;
+        ns1:email "daniel.tobias@pulsefit.com" ;
+        ns1:jobTitle "Senior Influencer Marketing Manager" ;
+        ns1:role "审批人/最终决策人" ;
+        openclaw:updatedAt "2026-04-28T09:22:17+00:00"^^xsd:dateTime .
 }
 
