@@ -1,0 +1,107 @@
+# PulseFit Base 字段映射
+# app_token: SvdqbQms3amuT5sgCQicLDzEnDf
+# table_id: tblNOgYNV5KYszUl
+# Base URL: https://jcneyh7qlo8i.feishu.cn/base/SvdqbQms3amuT5sgCQicLDzEnDf
+
+FIELDS:
+  # ── 主键 & 基础字段 ──────────────────────────────
+  ID:                    { field_id: fldafJ35VE, type: Text }
+  Name of Entity:        { field_id: fldhQNqI3S, type: Text }
+  Homepage:              { field_id: fldyWFsOYR, type: Text }
+  Email:                 { field_id: fld9sJxonY, type: Text }
+  Phone Number:           { field_id: fldpYn5Fhm, type: Text }
+  Campaign:              { field_id: fldKipDtj3, type: Text }
+  Recipient Name:         { field_id: fldWNPQcXU, type: Text }
+  Country:               { field_id: fld3abMApP, type: Text }
+
+  # ── 报价 & 产品 ─────────────────────────────────
+  Influencer Type:        { field_id: fldSAzOgJA, type: SingleSelect }
+  Has Voice-over:         { field_id: fldiu4ud8g, type: Checkbox }
+  Contract Amount (USD):  { field_id: fldAjzhwpf, type: Number }
+  Model Name:             { field_id: fldeUEyYwI, type: Text }
+  Color:                  { field_id: fld48HFjEC, type: Text }
+  Size:                   { field_id: fldrZAU1Lb, type: Text }
+  Quantity:              { field_id: fldQDZVkwC, type: Number }
+
+  # ── 地址 & 日期 ─────────────────────────────────
+  Shipping Address:       { field_id: fldbK8kntB, type: Text }
+  Start Date:             { field_id: fldugEURVt, type: DateTime }
+  Promised Live Date:     { field_id: fldhUSXJwl, type: DateTime }
+  Shipping Date:          { field_id: fld7PRQ3TC, type: DateTime }
+  Payment Due Date:       { field_id: fldA5S3jr7, type: DateTime }
+
+  # ── 状态字段（触发 & 审批）─────────────────────
+  Status:                { field_id: fldN9cJ4c8, type: SingleSelect }
+  Deliverable Status:     { field_id: fldQ7NStOO, type: SingleSelect }
+  Progress:              { field_id: fld3yeExp5, type: SingleSelect }
+
+  Contract Application:    { field_id: fldeqgXhJU, type: SingleSelect }
+  Shipment Form Status:   { field_id: fldet832My, type: SingleSelect }
+  Payment Form Status:    { field_id: fldoP3okbY, type: SingleSelect }
+  Payment Application:     { field_id: fldL8Gm79e, type: SingleSelect }
+
+  # ── Deliverable Verification（Act 5 核心）─────────
+  Total Posts Contracted: { field_id: fldw5oDzUl, type: Number }
+  Total Posts Delivered:   { field_id: fldNCnsGKi, type: Number }
+  Bio Link Verified:       { field_id: fld8IZ41RO, type: Checkbox }
+  Hashtags Verified:      { field_id: fld9iSMElt, type: Checkbox }
+  Paid Usage:              { field_id: fldyYYnI2o, type: Checkbox }
+  Performance Updated:     { field_id: fldE9d6l5b, type: Checkbox }
+
+  # ── 人员字段 ─────────────────────────────────────
+  POC:                   { field_id: fldv08NAXb, type: User, multiple: true }
+  Manage by:             { field_id: fldAQVay34, type: User, multiple: true }
+
+  # ── 财务 & 订单 ───────────────────────────────────
+  Order Number (SH):     { field_id: fldU6Kqnzb, type: Text }
+  Invoice Amount (USD):  { field_id: fldx9rWDtP, type: Number }
+  GL Number:             { field_id: fldbBhJm5z, type: Text }
+  Contract File Link:     { field_id: fldV4jwBMh, type: Url }
+
+  # ── 备注 & 匹配 ───────────────────────────────────
+  Pros & Cons:           { field_id: fldgNcdQYp, type: Text }
+  Cooperation Direction:  { field_id: fld0TdyfEM, type: Text }
+  Cost Per Post:         { field_id: fldDO2H8l8, type: Number }
+  Cost Per Engagement:   { field_id: fld6XPxhai, type: Number }
+  Cost Per View:         { field_id: fldIC9YzA0, type: Number }
+
+  # ── Act 5 触发辅助字段（Plan B）───────────────────
+  # 飞书单选字段 options API 有 bug，无法自动加 "Invoice Received" 选项
+  # 因此建一个文本字段作为触发信号，写入 "Invoice Received" 即触发 Act 5
+  Payment Trigger:         { field_id: fld8qUPbq8, type: Text }   # ★ Plan B Act 5 触发
+
+  # ── 已建好但需手动配置的字段 ─────────────────────
+  # Ready for Payment: { field_id: fldKtKOyBM, type: SingleSelect }
+  # → 单选选项需在 Base UI 手动添加 "Yes - Invoice Received"
+
+# ── 单选选项映射 ──────────────────────────────────
+STATUS_OPTIONS:
+  ACT4_TRIGGER: "4. Contracting / Contract signed"
+  ACT5_TRIGGER: "7. Live & Performance / Posted, tracking"
+
+DELIVERABLE_STATUS_OPTIONS:
+  PARTIALLY_DELIVERED: "Partially Delivered"
+  FULLY_DELIVERED:    "Fully Delivered"
+  NOT_DELIVERED:      "Not Delivered"
+  INVOICE_RECEIVED:   "Invoice Received"   # ★ Act 5 精确触发（需在 UI 加选项，或用 Payment Trigger 文本字段）
+
+CONTRACT_APPLICATION_OPTIONS:
+  APPROVED:  "Approved"
+  SUBMITTED: "Submitted"
+
+PAYMENT_APPLICATION_OPTIONS:
+  APPROVED:      "Approved"
+  PENDING:       "Pending"
+  NOT_SUBMITTED: "Not Submitted"
+
+# ── Act 5 触发值（Plan B 文本字段）─────────────────
+PAYMENT_TRIGGER_VALUE: "Invoice Received"
+
+# ── 待补充字段（可选，提升自动化精度）─────────────
+OPTIONAL_FIELDS:
+  - name: "W-9 Address"
+    reason: "Act 5 地址一致性校验（SOP: W-9 vs 合同地址）
+  - name: "Contract Address"
+    reason: "与 W-9 Address 对比，不一致时提示做 amendment
+  - name: "Paid Usage Duration"
+    reason: "记录 Paid Usage 时长（默认 3 个月，6 个月需说明理由）
